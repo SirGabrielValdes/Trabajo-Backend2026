@@ -1,0 +1,23 @@
+/* Estilos propios de ZonaOcio (complementan Bootstrap local) */
+.encabezado {
+    background: linear-gradient(135deg, #3b1f6e 0%, #1d4f91 60%, #0d8a8a 100%);
+}
+
+.tarjeta {
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.tarjeta:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.portada {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+}
+
+.banner {
+    max-height: 260px;
+    object-fit: cover;
+}

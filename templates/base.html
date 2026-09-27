@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}ZonaOcio{% endblock %} | ZonaOcio</title>
+    <!-- Bootstrap local (archivos estáticos) -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Barra de navegación: acceso a ambas aplicaciones desde cualquier página -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'videojuegos:inicio' %}">
+                <img src="{% static 'img/logo.svg' %}" alt="Logo ZonaOcio" width="32" height="32">
+                ZonaOcio
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                    aria-controls="menuPrincipal" aria-expanded="false" aria-label="Mostrar menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+                <ul class="navbar-nav ms-auto">
+                    {% with vista=request.resolver_match.view_name %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if vista == 'videojuegos:inicio' %}active{% endif %}"
+                           href="{% url 'videojuegos:inicio' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if vista == 'videojuegos:listado' or vista == 'videojuegos:detalle' %}active{% endif %}"
+                           href="{% url 'videojuegos:listado' %}">Videojuegos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if vista == 'peliculas:listado' or vista == 'peliculas:detalle' %}active{% endif %}"
+                           href="{% url 'peliculas:listado' %}">Películas</a>
+                    </li>
+                    {% endwith %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Encabezado -->
+    <header class="encabezado text-white py-5 mb-4">
+        <div class="container">
+            <h1 class="display-5 fw-bold">{% block encabezado %}ZonaOcio{% endblock %}</h1>
+            <p class="lead mb-0">{% block subtitulo %}Tu portal de entretenimiento digital{% endblock %}</p>
+        </div>
+    </header>
+
+    <!-- Contenido de cada página -->
+    <main class="container flex-grow-1 mb-5">
+        {% block contenido %}{% endblock %}
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bg-dark text-light py-4 mt-auto">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+            <span>&copy; {% now "Y" %} ZonaOcio &middot; Programación Back End (TI3041)</span>
+            <span>
+                <a class="link-light me-3" href="{% url 'videojuegos:listado' %}">Videojuegos</a>
+                <a class="link-light" href="{% url 'peliculas:listado' %}">Películas</a>
+            </span>
+        </div>
+    </footer>
+
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

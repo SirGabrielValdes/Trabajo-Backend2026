@@ -1,0 +1,140 @@
+[
+    {
+        "id": 1,
+        "titulo": "The Legend of Zelda: Tears of the Kingdom",
+        "genero": "Aventura",
+        "plataformas": [
+            "Nintendo Switch"
+        ],
+        "desarrolladora": "Nintendo",
+        "anio": 2023,
+        "precio": 59990,
+        "calificacion": 9.6,
+        "clasificacion": "E10+",
+        "descripcion": "Link explora los cielos y las profundidades de Hyrule para detener el regreso de Ganondorf, combinando objetos para crear vehículos y armas.",
+        "imagen": "videojuegos/img/zelda.svg"
+    },
+    {
+        "id": 2,
+        "titulo": "Elden Ring",
+        "genero": "RPG",
+        "plataformas": [
+            "PC",
+            "PS5",
+            "Xbox Series X|S"
+        ],
+        "desarrolladora": "FromSoftware",
+        "anio": 2022,
+        "precio": 49990,
+        "calificacion": 9.5,
+        "clasificacion": "M",
+        "descripcion": "Un RPG de acción de mundo abierto en las Tierras Intermedias, con combates exigentes y una historia escrita junto a George R. R. Martin.",
+        "imagen": "videojuegos/img/elden-ring.svg"
+    },
+    {
+        "id": 3,
+        "titulo": "Minecraft",
+        "genero": "Sandbox",
+        "plataformas": [
+            "PC",
+            "Nintendo Switch",
+            "PS4",
+            "Xbox One",
+            "Móvil"
+        ],
+        "desarrolladora": "Mojang Studios",
+        "anio": 2011,
+        "precio": 24990,
+        "calificacion": 9.0,
+        "clasificacion": "E10+",
+        "descripcion": "Construye, explora y sobrevive en un mundo formado por bloques, en solitario o con amigos.",
+        "imagen": "videojuegos/img/minecraft.svg"
+    },
+    {
+        "id": 4,
+        "titulo": "Hollow Knight",
+        "genero": "Metroidvania",
+        "plataformas": [
+            "PC",
+            "Nintendo Switch",
+            "PS4",
+            "Xbox One"
+        ],
+        "desarrolladora": "Team Cherry",
+        "anio": 2017,
+        "precio": 14990,
+        "calificacion": 9.1,
+        "clasificacion": "E10+",
+        "descripcion": "Recorre el reino en ruinas de Hallownest, un mundo subterráneo lleno de insectos, secretos y jefes desafiantes.",
+        "imagen": "videojuegos/img/hollow-knight.svg"
+    },
+    {
+        "id": 5,
+        "titulo": "EA Sports FC 25",
+        "genero": "Deportes",
+        "plataformas": [
+            "PC",
+            "PS5",
+            "Xbox Series X|S",
+            "Nintendo Switch"
+        ],
+        "desarrolladora": "EA Sports",
+        "anio": 2024,
+        "precio": 54990,
+        "calificacion": 7.0,
+        "clasificacion": "E",
+        "descripcion": "Simulador de fútbol con ligas y clubes licenciados, modo carrera y el nuevo modo Rush de cinco contra cinco.",
+        "imagen": "videojuegos/img/fc25.svg"
+    },
+    {
+        "id": 6,
+        "titulo": "Stardew Valley",
+        "genero": "Simulación",
+        "plataformas": [
+            "PC",
+            "Nintendo Switch",
+            "PS4",
+            "Xbox One",
+            "Móvil"
+        ],
+        "desarrolladora": "ConcernedApe",
+        "anio": 2016,
+        "precio": 12990,
+        "calificacion": 9.2,
+        "clasificacion": "E10+",
+        "descripcion": "Hereda la granja de tu abuelo, cultiva, pesca, haz amigos en el pueblo y descubre los misterios del valle.",
+        "imagen": "videojuegos/img/stardew-valley.svg"
+    },
+    {
+        "id": 7,
+        "titulo": "God of War Ragnarök",
+        "genero": "Acción",
+        "plataformas": [
+            "PS5",
+            "PS4",
+            "PC"
+        ],
+        "desarrolladora": "Santa Monica Studio",
+        "anio": 2022,
+        "precio": 59990,
+        "calificacion": 9.4,
+        "clasificacion": "M",
+        "descripcion": "Kratos y Atreus viajan por los Nueve Reinos mientras se acerca el Ragnarök, el fin de los tiempos nórdico.",
+        "imagen": "videojuegos/img/god-of-war.svg"
+    },
+    {
+        "id": 8,
+        "titulo": "Mario Kart 8 Deluxe",
+        "genero": "Carreras",
+        "plataformas": [
+            "Nintendo Switch"
+        ],
+        "desarrolladora": "Nintendo",
+        "anio": 2017,
+        "precio": 49990,
+        "calificacion": 9.0,
+        "clasificacion": "E",
+        "descripcion": "Carreras llenas de objetos y personajes de Nintendo, con modo local y en línea para hasta 12 jugadores.",
+        "imagen": "videojuegos/img/mario-kart.svg"
+    }
+]

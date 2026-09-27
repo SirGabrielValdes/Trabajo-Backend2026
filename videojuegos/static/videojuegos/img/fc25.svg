@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d5c63"/><stop offset="1" stop-color="#44a1a0"/></linearGradient></defs>
+<rect width="300" height="400" fill="url(#g)"/>
+<circle cx="150" cy="140" r="70" fill="rgba(255,255,255,0.15)"/>
+<text x="150" y="165" font-size="72" text-anchor="middle">🎮</text>
+<text x="150" y="300" font-size="28" font-weight="700" text-anchor="middle" fill="#fff" font-family="Segoe UI, Arial, sans-serif">EA Sports FC 25</text>
+<text x="150" y="380" font-size="16" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Segoe UI, Arial, sans-serif">Deportes · 2024</text>
+</svg>

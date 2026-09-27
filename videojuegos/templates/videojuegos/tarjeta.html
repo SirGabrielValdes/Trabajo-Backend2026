@@ -1,0 +1,14 @@
+{% load static %}
+<div class="card h-100 tarjeta">
+    <img src="{% static juego.imagen %}" class="card-img-top portada" alt="Portada de {{ juego.titulo }}">
+    <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge text-bg-dark">{{ juego.genero }}</span>
+            <span class="badge text-bg-{{ juego.color }}">{{ juego.calificacion }}</span>
+        </div>
+        <h5 class="card-title">{{ juego.titulo }}</h5>
+        <p class="card-text text-muted small mb-2">{{ juego.desarrolladora }} &middot; {{ juego.anio }}</p>
+        <p class="fw-bold mt-auto mb-2">{{ juego.precio_texto }}</p>
+        <a href="{% url 'videojuegos:detalle' juego.id %}" class="btn btn-outline-primary btn-sm">Ver ficha</a>
+    </div>
+</div>

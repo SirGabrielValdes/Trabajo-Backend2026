@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Videojuegos{% endblock %}
+{% block encabezado %}Catálogo de videojuegos{% endblock %}
+{% block subtitulo %}Información cargada desde el archivo videojuegos.json{% endblock %}
+
+{% block contenido %}
+<img src="{% static 'videojuegos/img/banner.svg' %}" class="img-fluid rounded shadow-sm banner w-100 mb-4" alt="Banner de videojuegos">
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-md-5">
+        <label for="q" class="form-label">Buscar</label>
+        <input type="search" id="q" name="q" value="{{ busqueda }}" class="form-control" placeholder="Título o desarrolladora">
+    </div>
+    <div class="col-md-3">
+        <label for="genero" class="form-label">Género</label>
+        <select id="genero" name="genero" class="form-select">
+            <option value="">Todos</option>
+            {% for nombre, cantidad in generos.items %}
+            <option value="{{ nombre }}" {% if nombre == genero_actual %}selected{% endif %}>{{ nombre }} ({{ cantidad }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="orden" class="form-label">Ordenar por</label>
+        <select id="orden" name="orden" class="form-select">
+            <option value="titulo" {% if orden_actual == "titulo" %}selected{% endif %}>Título</option>
+            <option value="precio" {% if orden_actual == "precio" %}selected{% endif %}>Precio</option>
+            <option value="calificacion" {% if orden_actual == "calificacion" %}selected{% endif %}>Calificación</option>
+            <option value="anio" {% if orden_actual == "anio" %}selected{% endif %}>Año</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<p class="text-muted">Mostrando {{ juegos|length }} videojuego{{ juegos|length|pluralize }}.</p>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+    {% for juego in juegos %}
+    <div class="col">
+        {% include "videojuegos/tarjeta.html" %}
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No se encontraron videojuegos con esos filtros.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

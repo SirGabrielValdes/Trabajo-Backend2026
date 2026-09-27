@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo %}Géneros de videojuegos{% endblock %}
+{% block encabezado %}Géneros de videojuegos{% endblock %}
+{% block subtitulo %}Categorías registradas en la base de datos{% endblock %}
+
+{% block contenido %}
+{% url 'videojuegos:agregar' 'generos' as url_agregar %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Buscar género" %}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Género</th>
+                <th>Descripción</th>
+                <th class="text-center">Videojuegos</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for genero in registros %}
+            <tr>
+                <td>{{ genero.pk }}</td>
+                <td class="fw-semibold">{{ genero.nombre }}</td>
+                <td class="text-muted">{{ genero.descripcion|default:"—" }}</td>
+                <td class="text-center">
+                    <a href="{% url 'videojuegos:listado' %}?genero={{ genero.pk }}" class="badge text-bg-primary text-decoration-none">{{ genero.total }}</a>
+                </td>
+                <td class="text-end">
+                    {% url 'videojuegos:modificar' 'generos' genero.pk as url_modificar %}
+                    {% url 'videojuegos:eliminar' 'generos' genero.pk as url_eliminar %}
+                    {% include "includes/botones_fila.html" %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-muted">No hay géneros registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

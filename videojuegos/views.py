@@ -1,61 +1,64 @@
+from django.db.models import Avg, Count, Q
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
-from .utils import buscar_por_id, cargar_videojuegos, obtener_generos
+from .models import Desarrolladora, Genero, Plataforma, Videojuego
 
-# Opciones de orden permitidas: valor del parámetro GET -> (campo, descendente)
+# Opciones de orden permitidas: valor del parámetro GET -> campo del ORM
 ORDENES = {
-    "titulo": ("titulo", False),
-    "precio": ("precio", False),
-    "calificacion": ("calificacion", True),
-    "anio": ("anio", True),
+    "titulo": "titulo",
+    "precio": "precio",
+    "calificacion": "-calificacion",
+    "anio": "-anio",
+}
+
+# Entidades de esta app que tendrán CRUD desde la interfaz (Evaluación N°3)
+ENTIDADES = {
+    "videojuegos": ("videojuego", Videojuego, "videojuegos:listado"),
+    "generos": ("género", Genero, "videojuegos:generos"),
+    "desarrolladoras": ("desarrolladora", Desarrolladora, "videojuegos:desarrolladoras"),
+    "plataformas": ("plataforma", Plataforma, "videojuegos:plataformas"),
 }
 
 
 def inicio(request):
     """Página de inicio / presentación del sitio."""
-    juegos = cargar_videojuegos()
-    total = len(juegos)
+    resumen = Videojuego.objects.aggregate(total=Count("id"), promedio=Avg("calificacion"))
 
-    promedio = 0
-    if total > 0:
-        promedio = round(sum(j["calificacion"] for j in juegos) / total, 1)
-
-    # Los 3 videojuegos mejor calificados
-    destacados = sorted(juegos, key=lambda j: j["calificacion"], reverse=True)[:3]
+    destacados = (
+        Videojuego.objects.select_related("genero", "desarrolladora")
+        .order_by("-calificacion")[:3]
+    )
 
     contexto = {
-        "total": total,
-        "promedio": promedio,
-        "cantidad_generos": len(obtener_generos(juegos)),
+        "total": resumen["total"],
+        "promedio": round(resumen["promedio"] or 0, 1),
+        "cantidad_generos": Genero.objects.count(),
         "destacados": destacados,
     }
     return render(request, "videojuegos/inicio.html", contexto)
 
 
 def listado(request):
-    """Catálogo de videojuegos leído desde el archivo JSON, con filtros."""
-    juegos = cargar_videojuegos()
-    generos = obtener_generos(juegos)
+    """Catálogo de videojuegos obtenido desde la base de datos con filtros."""
+    juegos = Videojuego.objects.select_related("genero", "desarrolladora").prefetch_related("plataformas")
+    generos = Genero.objects.annotate(total=Count("videojuegos")).order_by("nombre")
 
     genero = request.GET.get("genero", "")
     busqueda = request.GET.get("q", "").strip()
     orden = request.GET.get("orden", "titulo")
 
-    if genero:
-        juegos = [j for j in juegos if j["genero"] == genero]
+    if genero.isdigit():
+        juegos = juegos.filter(genero_id=int(genero))
 
     if busqueda:
-        texto = busqueda.lower()
-        juegos = [
-            j for j in juegos
-            if texto in j["titulo"].lower() or texto in j["desarrolladora"].lower()
-        ]
+        juegos = juegos.filter(
+            Q(titulo__icontains=busqueda) | Q(desarrolladora__nombre__icontains=busqueda)
+        )
 
     if orden not in ORDENES:
         orden = "titulo"
-    campo, descendente = ORDENES[orden]
-    juegos = sorted(juegos, key=lambda j: j[campo], reverse=descendente)
+    juegos = juegos.order_by(ORDENES[orden])
 
     contexto = {
         "juegos": juegos,
@@ -69,18 +72,63 @@ def listado(request):
 
 def detalle(request, juego_id):
     """Ficha de un videojuego y sugerencias que comparten plataforma."""
-    juegos = cargar_videojuegos()
-    juego = buscar_por_id(juegos, juego_id)
-    if juego is None:
-        raise Http404("Videojuego no encontrado")
-
-    plataformas = set(juego["plataformas"])
-    similares = []
-    for otro in juegos:
-        if otro["id"] != juego["id"] and plataformas & set(otro["plataformas"]):
-            similares.append(otro)
-        if len(similares) == 3:
-            break
-
+    juego = get_object_or_404(
+        Videojuego.objects.select_related("genero", "desarrolladora"), pk=juego_id
+    )
+    similares = (
+        Videojuego.objects.filter(plataformas__in=juego.plataformas.all())
+        .exclude(pk=juego.pk)
+        .select_related("genero", "desarrolladora")
+        .distinct()[:3]
+    )
     contexto = {"juego": juego, "similares": similares}
     return render(request, "videojuegos/detalle.html", contexto)
+
+
+def generos(request):
+    """Listado de géneros con la cantidad de videojuegos de cada uno."""
+    busqueda = request.GET.get("q", "").strip()
+    registros = Genero.objects.annotate(total=Count("videojuegos")).order_by("nombre")
+    if busqueda:
+        registros = registros.filter(nombre__icontains=busqueda)
+    return render(request, "videojuegos/generos.html", {"registros": registros, "busqueda": busqueda})
+
+
+def desarrolladoras(request):
+    """Listado de desarrolladoras con la cantidad de videojuegos."""
+    busqueda = request.GET.get("q", "").strip()
+    registros = Desarrolladora.objects.annotate(total=Count("videojuegos")).order_by("nombre")
+    if busqueda:
+        registros = registros.filter(Q(nombre__icontains=busqueda) | Q(pais__icontains=busqueda))
+    return render(request, "videojuegos/desarrolladoras.html", {"registros": registros, "busqueda": busqueda})
+
+
+def plataformas(request):
+    """Listado de plataformas con sus videojuegos (relación ManyToMany)."""
+    busqueda = request.GET.get("q", "").strip()
+    registros = Plataforma.objects.prefetch_related("videojuegos").order_by("nombre")
+    if busqueda:
+        registros = registros.filter(Q(nombre__icontains=busqueda) | Q(fabricante__icontains=busqueda))
+    return render(request, "videojuegos/plataformas.html", {"registros": registros, "busqueda": busqueda})
+
+
+def accion_pendiente(request, entidad, accion, pk=None):
+    """Marcador de posición para los botones Agregar / Modificar / Eliminar.
+
+    Las operaciones CRUD desde la interfaz se implementarán en la siguiente
+    evaluación; por ahora se realizan desde Django Admin.
+    """
+    if entidad not in ENTIDADES or accion not in ("agregar", "modificar", "eliminar"):
+        raise Http404("Acción no válida")
+
+    nombre, modelo, url_volver = ENTIDADES[entidad]
+    registro = get_object_or_404(modelo, pk=pk) if pk is not None else None
+
+    contexto = {
+        "accion": accion,
+        "nombre": nombre,
+        "registro": registro,
+        "url_volver": url_volver,
+        "url_admin": f"admin:videojuegos_{modelo._meta.model_name}_changelist",
+    }
+    return render(request, "accion_pendiente.html", contexto)

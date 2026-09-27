@@ -3,22 +3,25 @@
 
 {% block titulo %}Videojuegos{% endblock %}
 {% block encabezado %}Catálogo de videojuegos{% endblock %}
-{% block subtitulo %}Información cargada desde el archivo videojuegos.json{% endblock %}
+{% block subtitulo %}Información obtenida desde la base de datos{% endblock %}
 
 {% block contenido %}
 <img src="{% static 'videojuegos/img/banner.svg' %}" class="img-fluid rounded shadow-sm banner w-100 mb-4" alt="Banner de videojuegos">
 
-<form method="get" class="row g-2 align-items-end mb-4">
-    <div class="col-md-5">
+<form method="get" class="row g-2 align-items-end mb-4" role="search">
+    <div class="col-md-2 d-grid">
+        <a href="{% url 'videojuegos:agregar' 'videojuegos' %}" class="btn btn-success">+ Agregar</a>
+    </div>
+    <div class="col-md-4">
         <label for="q" class="form-label">Buscar</label>
         <input type="search" id="q" name="q" value="{{ busqueda }}" class="form-control" placeholder="Título o desarrolladora">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label for="genero" class="form-label">Género</label>
         <select id="genero" name="genero" class="form-select">
             <option value="">Todos</option>
-            {% for nombre, cantidad in generos.items %}
-            <option value="{{ nombre }}" {% if nombre == genero_actual %}selected{% endif %}>{{ nombre }} ({{ cantidad }})</option>
+            {% for genero in generos %}
+            <option value="{{ genero.pk }}" {% if genero.pk|stringformat:"s" == genero_actual %}selected{% endif %}>{{ genero.nombre }} ({{ genero.total }})</option>
             {% endfor %}
         </select>
     </div>
@@ -32,7 +35,7 @@
         </select>
     </div>
     <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <button type="submit" class="btn btn-primary">Buscar</button>
     </div>
 </form>
 
@@ -41,7 +44,7 @@
 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
     {% for juego in juegos %}
     <div class="col">
-        {% include "videojuegos/tarjeta.html" %}
+        {% include "videojuegos/tarjeta.html" with acciones=True %}
     </div>
     {% empty %}
     <div class="col-12">

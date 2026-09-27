@@ -3,22 +3,25 @@
 
 {% block titulo %}Películas{% endblock %}
 {% block encabezado %}Cartelera de películas{% endblock %}
-{% block subtitulo %}Información cargada desde el archivo peliculas.json{% endblock %}
+{% block subtitulo %}Información obtenida desde la base de datos{% endblock %}
 
 {% block contenido %}
 <img src="{% static 'peliculas/img/banner.svg' %}" class="img-fluid rounded shadow-sm banner w-100 mb-4" alt="Banner de películas">
 
-<form method="get" class="row g-2 align-items-end mb-3">
-    <div class="col-md-5">
+<form method="get" class="row g-2 align-items-end mb-3" role="search">
+    <div class="col-md-2 d-grid">
+        <a href="{% url 'peliculas:agregar' 'peliculas' %}" class="btn btn-success">+ Agregar</a>
+    </div>
+    <div class="col-md-4">
         <label for="q" class="form-label">Buscar</label>
         <input type="search" id="q" name="q" value="{{ busqueda }}" class="form-control" placeholder="Título o director">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label for="genero" class="form-label">Género</label>
         <select id="genero" name="genero" class="form-select">
             <option value="">Todos</option>
-            {% for nombre in generos %}
-            <option value="{{ nombre }}" {% if nombre == genero_actual %}selected{% endif %}>{{ nombre }}</option>
+            {% for genero in generos %}
+            <option value="{{ genero.pk }}" {% if genero.pk|stringformat:"s" == genero_actual %}selected{% endif %}>{{ genero.nombre }}</option>
             {% endfor %}
         </select>
     </div>
@@ -30,7 +33,7 @@
         </select>
     </div>
     <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-danger">Filtrar</button>
+        <button type="submit" class="btn btn-primary">Buscar</button>
     </div>
 </form>
 
@@ -50,20 +53,25 @@
                 <th>Duración</th>
                 <th>Clasificación</th>
                 <th>Nota</th>
-                <th></th>
+                <th class="text-end">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for pelicula in peliculas %}
             <tr>
                 <td class="fw-semibold">{{ pelicula.titulo }}</td>
-                <td>{{ pelicula.director }}</td>
-                <td>{{ pelicula.genero }}</td>
+                <td>{{ pelicula.directores.all|join:", " }}</td>
+                <td>{{ pelicula.genero.nombre }}</td>
                 <td>{{ pelicula.anio }}</td>
                 <td class="text-nowrap">{{ pelicula.duracion_texto }}</td>
-                <td>{{ pelicula.clasificacion }}</td>
+                <td>{{ pelicula.clasificacion.codigo }}</td>
                 <td>{{ pelicula.calificacion }}</td>
-                <td><a href="{% url 'peliculas:detalle' pelicula.id %}" class="btn btn-sm btn-outline-danger">Ver</a></td>
+                <td class="text-end text-nowrap">
+                    <a href="{% url 'peliculas:detalle' pelicula.id %}" class="btn btn-sm btn-outline-secondary">Ver</a>
+                    {% url 'peliculas:modificar' 'peliculas' pelicula.pk as url_modificar %}
+                    {% url 'peliculas:eliminar' 'peliculas' pelicula.pk as url_eliminar %}
+                    {% include "includes/botones_fila.html" %}
+                </td>
             </tr>
             {% empty %}
             <tr><td colspan="8" class="text-center text-muted">No se encontraron películas.</td></tr>
@@ -75,7 +83,7 @@
 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
     {% for pelicula in peliculas %}
     <div class="col">
-        {% include "peliculas/tarjeta.html" %}
+        {% include "peliculas/tarjeta.html" with acciones=True %}
     </div>
     {% empty %}
     <div class="col-12">

@@ -1,0 +1,12 @@
+{% comment %}
+Barra con los botones Agregar y Buscar de un listado.
+Parámetros: url_agregar, busqueda, texto_busqueda
+{% endcomment %}
+<div class="d-flex flex-column flex-md-row gap-2 justify-content-between mb-4">
+    <a href="{{ url_agregar }}" class="btn btn-success">+ Agregar</a>
+    <form method="get" class="d-flex gap-2" role="search">
+        <input type="search" name="q" value="{{ busqueda }}" class="form-control"
+               placeholder="{{ texto_busqueda|default:'Buscar...' }}" aria-label="Buscar">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+</div>

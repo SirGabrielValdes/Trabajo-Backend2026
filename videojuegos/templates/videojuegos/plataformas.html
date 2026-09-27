@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block titulo %}Plataformas{% endblock %}
+{% block encabezado %}Plataformas{% endblock %}
+{% block subtitulo %}Consolas y dispositivos, con los videojuegos disponibles en cada una{% endblock %}
+
+{% block contenido %}
+{% url 'videojuegos:agregar' 'plataformas' as url_agregar %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Nombre o fabricante" %}
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for plataforma in registros %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>{{ plataforma.nombre }}</strong>
+                <span class="badge text-bg-secondary">{{ plataforma.fabricante|default:"—" }}</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for juego in plataforma.videojuegos.all %}
+                <li class="list-group-item">
+                    <a href="{% url 'videojuegos:detalle' juego.pk %}" class="text-decoration-none">{{ juego.titulo }}</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Sin videojuegos asociados.</li>
+                {% endfor %}
+            </ul>
+            <div class="card-footer bg-transparent text-end">
+                {% url 'videojuegos:modificar' 'plataformas' plataforma.pk as url_modificar %}
+                {% url 'videojuegos:eliminar' 'plataformas' plataforma.pk as url_eliminar %}
+                {% include "includes/botones_fila.html" %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="alert alert-info">No hay plataformas registradas.</div></div>
+    {% endfor %}
+</div>
+{% endblock %}

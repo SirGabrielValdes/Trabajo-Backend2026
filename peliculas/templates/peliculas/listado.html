@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Películas{% endblock %}
+{% block encabezado %}Cartelera de películas{% endblock %}
+{% block subtitulo %}Información cargada desde el archivo peliculas.json{% endblock %}
+
+{% block contenido %}
+<img src="{% static 'peliculas/img/banner.svg' %}" class="img-fluid rounded shadow-sm banner w-100 mb-4" alt="Banner de películas">
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-5">
+        <label for="q" class="form-label">Buscar</label>
+        <input type="search" id="q" name="q" value="{{ busqueda }}" class="form-control" placeholder="Título o director">
+    </div>
+    <div class="col-md-3">
+        <label for="genero" class="form-label">Género</label>
+        <select id="genero" name="genero" class="form-select">
+            <option value="">Todos</option>
+            {% for nombre in generos %}
+            <option value="{{ nombre }}" {% if nombre == genero_actual %}selected{% endif %}>{{ nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="vista" class="form-label">Vista</label>
+        <select id="vista" name="vista" class="form-select">
+            <option value="tarjetas" {% if vista == "tarjetas" %}selected{% endif %}>Tarjetas</option>
+            <option value="tabla" {% if vista == "tabla" %}selected{% endif %}>Tabla</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-danger">Filtrar</button>
+    </div>
+</form>
+
+<p class="text-muted">
+    {{ peliculas|length }} película{{ peliculas|length|pluralize }} &middot; {{ horas_totales }} horas de cine en total.
+</p>
+
+{% if vista == "tabla" %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th>Director</th>
+                <th>Género</th>
+                <th>Año</th>
+                <th>Duración</th>
+                <th>Clasificación</th>
+                <th>Nota</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pelicula in peliculas %}
+            <tr>
+                <td class="fw-semibold">{{ pelicula.titulo }}</td>
+                <td>{{ pelicula.director }}</td>
+                <td>{{ pelicula.genero }}</td>
+                <td>{{ pelicula.anio }}</td>
+                <td class="text-nowrap">{{ pelicula.duracion_texto }}</td>
+                <td>{{ pelicula.clasificacion }}</td>
+                <td>{{ pelicula.calificacion }}</td>
+                <td><a href="{% url 'peliculas:detalle' pelicula.id %}" class="btn btn-sm btn-outline-danger">Ver</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center text-muted">No se encontraron películas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+    {% for pelicula in peliculas %}
+    <div class="col">
+        {% include "peliculas/tarjeta.html" %}
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No se encontraron películas con esos filtros.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}{{ pelicula.titulo }}{% endblock %}
+{% block encabezado %}{{ pelicula.titulo }}{% endblock %}
+{% block subtitulo %}Dirigida por {{ pelicula.director }}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'videojuegos:inicio' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'peliculas:listado' %}">Películas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ pelicula.titulo }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <img src="{% static pelicula.imagen %}" class="img-fluid rounded shadow portada w-100" alt="Póster de {{ pelicula.titulo }}">
+    </div>
+    <div class="col-md-8">
+        <p class="fs-4 text-warning mb-1">{{ pelicula.estrellas }}</p>
+        <p class="text-muted">{{ pelicula.calificacion }} / 10</p>
+        <h2 class="h5 fw-bold">Sinopsis</h2>
+        <p class="lead">{{ pelicula.sinopsis }}</p>
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>Género:</strong> {{ pelicula.genero }}</li>
+            <li class="list-group-item"><strong>Año:</strong> {{ pelicula.anio }}</li>
+            <li class="list-group-item"><strong>Duración:</strong> {{ pelicula.duracion_texto }}</li>
+            <li class="list-group-item">
+                <strong>Clasificación:</strong> {{ pelicula.clasificacion }} ({{ pelicula.clasificacion_texto }})
+            </li>
+        </ul>
+        <a href="{% url 'peliculas:listado' %}" class="btn btn-outline-secondary">&larr; Volver a la cartelera</a>
+    </div>
+</div>
+
+{% if relacionadas %}
+<h2 class="h4 fw-bold mb-3">Te podría interesar</h2>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    {% for pelicula in relacionadas %}
+    <div class="col">
+        {% include "peliculas/tarjeta.html" %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

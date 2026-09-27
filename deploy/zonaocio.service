@@ -1,0 +1,18 @@
+# Servicio systemd que mantiene Gunicorn ejecutando ZonaOcio en la instancia EC2.
+# Copiar a /etc/systemd/system/zonaocio.service
+[Unit]
+Description=Gunicorn - ZonaOcio (Django)
+After=network.target mysql.service
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/Trabajo-Backend2026
+ExecStart=/home/ubuntu/Trabajo-Backend2026/venv/bin/gunicorn \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          zonaocio.wsgi:application
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

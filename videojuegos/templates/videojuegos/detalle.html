@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}{{ juego.titulo }}{% endblock %}
+{% block encabezado %}{{ juego.titulo }}{% endblock %}
+{% block subtitulo %}{{ juego.genero }} &middot; {{ juego.desarrolladora }}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'videojuegos:inicio' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'videojuegos:listado' %}">Videojuegos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ juego.titulo }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <img src="{% if juego.imagen %}{% static juego.imagen %}{% else %}{% static 'img/sin-imagen.svg' %}{% endif %}" class="img-fluid rounded shadow portada w-100" alt="Portada de {{ juego.titulo }}">
+    </div>
+    <div class="col-md-8">
+        <span class="badge text-bg-{{ juego.color }} fs-6 mb-3">{{ juego.calificacion }} / 10 &middot; {{ juego.nivel }}</span>
+        <p class="lead">{{ juego.descripcion }}</p>
+        <table class="table table-striped">
+            <tbody>
+                <tr><th scope="row">Género</th><td>{{ juego.genero }}</td></tr>
+                <tr><th scope="row">Desarrolladora</th><td>{{ juego.desarrolladora }}</td></tr>
+                <tr><th scope="row">Año de lanzamiento</th><td>{{ juego.anio }}</td></tr>
+                <tr><th scope="row">Clasificación ESRB</th><td>{{ juego.get_clasificacion_display }}</td></tr>
+                <tr><th scope="row">Precio</th><td>{{ juego.precio_texto }}</td></tr>
+                <tr>
+                    <th scope="row">Plataformas</th>
+                    <td>
+                        {% for plataforma in juego.plataformas.all %}
+                        <span class="badge text-bg-secondary">{{ plataforma }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'videojuegos:listado' %}" class="btn btn-outline-secondary">&larr; Volver al catálogo</a>
+            {% url 'videojuegos:modificar' 'videojuegos' juego.pk as url_modificar %}
+            {% url 'videojuegos:eliminar' 'videojuegos' juego.pk as url_eliminar %}
+            {% include "includes/botones_fila.html" %}
+        </div>
+    </div>
+</div>
+
+{% if similares %}
+<h2 class="h4 fw-bold mb-3">También disponibles en sus plataformas</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for juego in similares %}
+    <div class="col">
+        {% include "videojuegos/tarjeta.html" %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block titulo %}Clasificaciones{% endblock %}
+{% block encabezado %}Clasificaciones por edad{% endblock %}
+{% block subtitulo %}Calificación cinematográfica chilena{% endblock %}
+
+{% block contenido %}
+{% url 'peliculas:agregar' 'clasificaciones' as url_agregar %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Código o descripción" %}
+
+<ul class="list-group shadow-sm">
+    {% for clasificacion in registros %}
+    <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 py-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge text-bg-dark fs-6">{{ clasificacion.codigo }}</span>
+            <span>{{ clasificacion.descripcion }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge rounded-pill text-bg-danger">{{ clasificacion.total }} película{{ clasificacion.total|pluralize }}</span>
+            {% url 'peliculas:modificar' 'clasificaciones' clasificacion.pk as url_modificar %}
+            {% url 'peliculas:eliminar' 'clasificaciones' clasificacion.pk as url_eliminar %}
+            {% include "includes/botones_fila.html" %}
+        </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted">No hay clasificaciones registradas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Inicio{% endblock %}
+{% block encabezado %}Bienvenido a ZonaOcio{% endblock %}
+{% block subtitulo %}Descubre videojuegos y películas en un solo lugar{% endblock %}
+
+{% block contenido %}
+<section class="row align-items-center g-4 mb-5">
+    <div class="col-lg-6">
+        <h2 class="fw-bold">¿Qué es ZonaOcio?</h2>
+        <p class="lead">
+            ZonaOcio es un sitio informativo que reúne los videojuegos más jugados y las
+            películas más comentadas, con fichas, calificaciones y datos de cada título.
+        </p>
+        <div class="d-flex gap-2">
+            <a href="{% url 'videojuegos:listado' %}" class="btn btn-primary btn-lg">Ver videojuegos</a>
+            <a href="{% url 'peliculas:listado' %}" class="btn btn-outline-danger btn-lg">Ver películas</a>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <img src="{% static 'videojuegos/img/banner.svg' %}" class="img-fluid rounded shadow banner w-100" alt="Banner de videojuegos">
+    </div>
+</section>
+
+<section class="row g-3 mb-5 text-center">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="display-6 fw-bold text-primary mb-0">{{ total }}</p>
+                <p class="text-muted mb-0">Videojuegos en el catálogo</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="display-6 fw-bold text-success mb-0">{{ promedio }}</p>
+                <p class="text-muted mb-0">Calificación promedio</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="display-6 fw-bold text-info mb-0">{{ cantidad_generos }}</p>
+                <p class="text-muted mb-0">Géneros distintos</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="fw-bold mb-3">Videojuegos destacados</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for juego in destacados %}
+        <div class="col">
+            {% include "videojuegos/tarjeta.html" %}
+        </div>
+        {% empty %}
+        <p class="text-muted">No hay videojuegos para mostrar.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

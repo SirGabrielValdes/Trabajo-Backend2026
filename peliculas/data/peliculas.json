@@ -1,0 +1,98 @@
+[
+    {
+        "id": 1,
+        "titulo": "Oppenheimer",
+        "director": "Christopher Nolan",
+        "genero": "Drama",
+        "anio": 2023,
+        "duracion_min": 180,
+        "clasificacion": "14",
+        "calificacion": 8.3,
+        "sinopsis": "La historia del físico J. Robert Oppenheimer y su papel en el desarrollo de la bomba atómica durante el Proyecto Manhattan.",
+        "imagen": "peliculas/img/oppenheimer.svg"
+    },
+    {
+        "id": 2,
+        "titulo": "Spider-Man: A través del Spider-Verso",
+        "director": "Joaquim Dos Santos, Kemp Powers y Justin K. Thompson",
+        "genero": "Animación",
+        "anio": 2023,
+        "duracion_min": 140,
+        "clasificacion": "TE+7",
+        "calificacion": 8.6,
+        "sinopsis": "Miles Morales viaja a través del multiverso y se enfrenta a una sociedad de Spider-Personas con una misión muy distinta a la suya.",
+        "imagen": "peliculas/img/spider-verso.svg"
+    },
+    {
+        "id": 3,
+        "titulo": "Dune: Parte Dos",
+        "director": "Denis Villeneuve",
+        "genero": "Ciencia ficción",
+        "anio": 2024,
+        "duracion_min": 166,
+        "clasificacion": "14",
+        "calificacion": 8.5,
+        "sinopsis": "Paul Atreides se une a los Fremen en Arrakis para vengarse de quienes destruyeron a su familia.",
+        "imagen": "peliculas/img/dune.svg"
+    },
+    {
+        "id": 4,
+        "titulo": "Intensamente 2",
+        "director": "Kelsey Mann",
+        "genero": "Animación",
+        "anio": 2024,
+        "duracion_min": 96,
+        "clasificacion": "TE",
+        "calificacion": 7.6,
+        "sinopsis": "Riley entra a la adolescencia y nuevas emociones, como Ansiedad, llegan al cuartel general de su mente.",
+        "imagen": "peliculas/img/intensamente.svg"
+    },
+    {
+        "id": 5,
+        "titulo": "El Conjuro",
+        "director": "James Wan",
+        "genero": "Terror",
+        "anio": 2013,
+        "duracion_min": 112,
+        "clasificacion": "14",
+        "calificacion": 7.5,
+        "sinopsis": "Los investigadores paranormales Ed y Lorraine Warren ayudan a una familia aterrorizada por una presencia oscura en su granja.",
+        "imagen": "peliculas/img/conjuro.svg"
+    },
+    {
+        "id": 6,
+        "titulo": "Parásitos",
+        "director": "Bong Joon-ho",
+        "genero": "Suspenso",
+        "anio": 2019,
+        "duracion_min": 132,
+        "clasificacion": "14",
+        "calificacion": 8.5,
+        "sinopsis": "Una familia pobre se infiltra poco a poco en la vida de una familia adinerada, con consecuencias inesperadas.",
+        "imagen": "peliculas/img/parasitos.svg"
+    },
+    {
+        "id": 7,
+        "titulo": "Coco",
+        "director": "Lee Unkrich",
+        "genero": "Animación",
+        "anio": 2017,
+        "duracion_min": 105,
+        "clasificacion": "TE",
+        "calificacion": 8.4,
+        "sinopsis": "Miguel sueña con ser músico y termina en la Tierra de los Muertos, donde descubre la verdadera historia de su familia.",
+        "imagen": "peliculas/img/coco.svg"
+    },
+    {
+        "id": 8,
+        "titulo": "Interestelar",
+        "director": "Christopher Nolan",
+        "genero": "Ciencia ficción",
+        "anio": 2014,
+        "duracion_min": 169,
+        "clasificacion": "TE+7",
+        "calificacion": 8.7,
+        "sinopsis": "Un grupo de astronautas viaja por un agujero de gusano en busca de un nuevo hogar para la humanidad.",
+        "imagen": "peliculas/img/interestelar.svg"
+    }
+]

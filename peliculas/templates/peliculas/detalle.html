@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}{{ pelicula.titulo }}{% endblock %}
+{% block encabezado %}{{ pelicula.titulo }}{% endblock %}
+{% block subtitulo %}Dirigida por {{ pelicula.directores.all|join:", " }}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'videojuegos:inicio' %}">Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'peliculas:listado' %}">Películas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ pelicula.titulo }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <img src="{% if pelicula.imagen %}{% static pelicula.imagen %}{% else %}{% static 'img/sin-imagen.svg' %}{% endif %}" class="img-fluid rounded shadow portada w-100" alt="Póster de {{ pelicula.titulo }}">
+    </div>
+    <div class="col-md-8">
+        <p class="fs-4 text-warning mb-1">{{ pelicula.estrellas }}</p>
+        <p class="text-muted">{{ pelicula.calificacion }} / 10</p>
+        <h2 class="h5 fw-bold">Sinopsis</h2>
+        <p class="lead">{{ pelicula.sinopsis }}</p>
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>Género:</strong> {{ pelicula.genero.nombre }}</li>
+            <li class="list-group-item"><strong>Director(es):</strong> {{ pelicula.directores.all|join:", " }}</li>
+            <li class="list-group-item"><strong>Año:</strong> {{ pelicula.anio }}</li>
+            <li class="list-group-item"><strong>Duración:</strong> {{ pelicula.duracion_texto }}</li>
+            <li class="list-group-item">
+                <strong>Clasificación:</strong> {{ pelicula.clasificacion.codigo }} ({{ pelicula.clasificacion.descripcion }})
+            </li>
+        </ul>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'peliculas:listado' %}" class="btn btn-outline-secondary">&larr; Volver a la cartelera</a>
+            {% url 'peliculas:modificar' 'peliculas' pelicula.pk as url_modificar %}
+            {% url 'peliculas:eliminar' 'peliculas' pelicula.pk as url_eliminar %}
+            {% include "includes/botones_fila.html" %}
+        </div>
+    </div>
+</div>
+
+{% if relacionadas %}
+<h2 class="h4 fw-bold mb-3">Te podría interesar</h2>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    {% for pelicula in relacionadas %}
+    <div class="col">
+        {% include "peliculas/tarjeta.html" %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

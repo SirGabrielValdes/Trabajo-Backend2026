@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5c1010"/><stop offset="1" stop-color="#d9822b"/></linearGradient></defs>
+<rect width="1200" height="300" fill="url(#g)"/>
+<circle cx="1050" cy="60" r="140" fill="rgba(255,255,255,0.08)"/><circle cx="950" cy="280" r="90" fill="rgba(255,255,255,0.08)"/>
+<text x="1000" y="190" font-size="120" text-anchor="middle">🍿</text>
+<text x="70" y="150" font-size="64" font-weight="700" fill="#fff" font-family="Segoe UI, Arial, sans-serif">Películas</text>
+<text x="72" y="205" font-size="28" fill="rgba(255,255,255,0.85)" font-family="Segoe UI, Arial, sans-serif">Cartelera de estrenos y clásicos</text>
+</svg>

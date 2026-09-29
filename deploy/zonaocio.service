@@ -9,7 +9,7 @@ User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/Trabajo-Backend2026
 ExecStart=/home/ubuntu/Trabajo-Backend2026/venv/bin/gunicorn \
-          --workers 3 \
+          --workers 2 \
           --bind 127.0.0.1:8000 \
           zonaocio.wsgi:application
 Restart=always

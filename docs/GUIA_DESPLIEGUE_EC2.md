@@ -92,6 +92,22 @@ apache2 -v
 
 ---
 
+### Memoria de intercambio (swap)
+
+Las instancias `t2.micro`/`t3.micro` tienen solo 1 GB de RAM, poco para MySQL + Apache + phpMyAdmin + Django.
+Crear 2 GB de swap evita que el sitio se ponga lento:
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h                                  # debe mostrar Swap: 2.0Gi
+```
+
+---
+
 ## 4. Crear la base de datos y su usuario
 
 ```bash
@@ -259,6 +275,8 @@ sudo systemctl restart zonaocio
 | **503 Service Unavailable** | Gunicorn no está corriendo: `sudo journalctl -u zonaocio -n 50` para ver el error. |
 | **phpMyAdmin muestra código PHP** | Falta `libapache2-mod-php`: instalarlo y `sudo systemctl restart apache2`. |
 | **No carga la página** | Revisar que el Security Group tenga abierto el puerto 80. |
+| **El sitio y phpMyAdmin cargan muy lento** | Falta memoria: crear el swap del paso 3 y dejar Gunicorn con `--workers 2`. Revisar también en EC2 → *Monitoring* que el *CPU credit balance* no esté en 0. |
+| **Tarda varios segundos antes de abrir** | El navegador intenta `https://` primero. Escribir la dirección completa: `http://IP_PUBLICA/`. |
 
 ---
 

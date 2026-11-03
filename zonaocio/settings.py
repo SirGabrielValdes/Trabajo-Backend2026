@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "videojuegos",
     "peliculas",
     "cuentas",
+    "ventas",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block titulo %}Ventas{% endblock %}
+{% block encabezado %}Ventas de videojuegos{% endblock %}
+{% block subtitulo %}{% if perms.ventas.ver_todas_las_ventas %}Todas las ventas registradas{% else %}Ventas registradas por ti{% endif %}{% endblock %}
+
+{% block contenido %}
+{% url 'ventas:nueva' as url_agregar %}
+{% include "includes/barra_acciones.html" with texto_busqueda="N°, cliente, RUT o vendedor" puede_agregar=perms.ventas.add_venta %}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>N°</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Vendedor</th>
+                <th class="text-center">Líneas</th>
+                <th class="text-end">Total</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td class="fw-semibold">{{ venta.pk }}</td>
+                <td class="text-nowrap">{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                <td>{{ venta.cliente.nombre }}<br><small class="text-muted">{{ venta.cliente.rut }}</small></td>
+                <td>{{ venta.vendedor.get_username }}</td>
+                <td class="text-center">{{ venta.unidades }}</td>
+                <td class="text-end fw-semibold text-nowrap">{{ venta.total_texto }}</td>
+                <td class="text-end text-nowrap">
+                    <a href="{% url 'ventas:detalle' venta.pk %}" class="btn btn-sm btn-outline-secondary">Ver</a>
+                    {% if perms.ventas.delete_venta %}
+                    <a href="{% url 'ventas:anular' venta.pk %}" class="btn btn-sm btn-outline-danger">Anular</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted">No hay ventas registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

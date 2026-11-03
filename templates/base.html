@@ -53,6 +53,20 @@
                             <li><a class="dropdown-item" href="{% url 'peliculas:clasificaciones' %}">Clasificaciones</a></li>
                         </ul>
                     </li>
+                    {% if perms.ventas.view_venta or perms.ventas.view_cliente %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if app == 'ventas' %}active{% endif %}"
+                           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Ventas</a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            {% if perms.ventas.add_venta %}<li><a class="dropdown-item" href="{% url 'ventas:nueva' %}">Nueva venta</a></li>{% endif %}
+                            {% if perms.ventas.view_venta %}<li><a class="dropdown-item" href="{% url 'ventas:listado' %}">Listado de ventas</a></li>{% endif %}
+                            {% if perms.ventas.view_cliente %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'ventas:clientes' %}">Clientes</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link {% if app == 'cuentas' %}active{% endif %}" href="{% url 'cuentas:panel' %}">Panel</a>

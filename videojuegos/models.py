@@ -76,6 +76,7 @@ class Videojuego(models.Model):
         "imagen", max_length=200, blank=True,
         help_text="Ruta dentro de los archivos estáticos, ej: videojuegos/img/zelda.svg",
     )
+    stock = models.PositiveIntegerField("stock", default=0, help_text="Unidades disponibles para la venta")
 
     class Meta:
         verbose_name = "videojuego"

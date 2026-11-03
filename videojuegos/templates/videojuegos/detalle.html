@@ -28,6 +28,7 @@
                 <tr><th scope="row">Año de lanzamiento</th><td>{{ juego.anio }}</td></tr>
                 <tr><th scope="row">Clasificación ESRB</th><td>{{ juego.get_clasificacion_display }}</td></tr>
                 <tr><th scope="row">Precio</th><td>{{ juego.precio_texto }}</td></tr>
+                <tr><th scope="row">Stock disponible</th><td>{{ juego.stock }} unidad{{ juego.stock|pluralize:"es" }}</td></tr>
                 <tr>
                     <th scope="row">Plataformas</th>
                     <td>

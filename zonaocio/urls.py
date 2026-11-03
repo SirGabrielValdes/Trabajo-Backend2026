@@ -10,4 +10,5 @@ urlpatterns = [
     path("", include("videojuegos.urls")),
     path("peliculas/", include("peliculas.urls")),
     path("cuentas/", include("cuentas.urls")),
+    path("ventas/", include("ventas.urls")),
 ]

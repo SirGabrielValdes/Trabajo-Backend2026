@@ -40,7 +40,7 @@ class VideojuegoForm(FormularioBootstrap, forms.ModelForm):
         model = Videojuego
         fields = [
             "titulo", "genero", "desarrolladora", "plataformas", "anio", "precio",
-            "calificacion", "clasificacion", "descripcion", "imagen",
+            "calificacion", "clasificacion", "descripcion", "imagen", "stock",
         ]
         widgets = {
             "plataformas": forms.CheckboxSelectMultiple,

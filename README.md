@@ -52,6 +52,8 @@ pantalla solo aparecen si el perfil tiene el permiso. Un acceso no permitido mue
 
 ## Modelo de datos
 
+Diagrama completo: [`docs/modelo_er.png`](docs/modelo_er.png).
+
 ```mermaid
 erDiagram
     VJ_GENERO ||--o{ VIDEOJUEGO : "clasifica"

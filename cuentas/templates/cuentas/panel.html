@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block titulo %}Panel{% endblock %}
+{% block encabezado %}Hola, {{ user.get_full_name|default:user.get_username }}{% endblock %}
+{% block subtitulo %}Perfil: {{ rol|default:"sin perfil asignado" }}{% endblock %}
+
+{% block contenido %}
+<p class="lead">Has iniciado sesión correctamente.</p>
+{% endblock %}

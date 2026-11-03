@@ -53,9 +53,31 @@
                             <li><a class="dropdown-item" href="{% url 'peliculas:clasificaciones' %}">Clasificaciones</a></li>
                         </ul>
                     </li>
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin:index' %}">Administración</a>
+                        <a class="nav-link {% if app == 'cuentas' %}active{% endif %}" href="{% url 'cuentas:panel' %}">Panel</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.get_username }}
+                            {% if rol_usuario %}<span class="badge text-bg-info ms-1">{{ rol_usuario }}</span>{% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'cuentas:panel' %}">Mi panel</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'cuentas:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm ms-lg-2 mt-2 mt-lg-0" href="{% url 'cuentas:login' %}">Iniciar sesión</a>
+                    </li>
+                    {% endif %}
                     {% endwith %}
                 </ul>
             </div>
@@ -72,6 +94,14 @@
 
     <!-- Contenido de cada página -->
     <main class="container flex-grow-1 mb-5">
+        {% if messages %}
+        {% for mensaje in messages %}
+        <div class="alert alert-{% if mensaje.tags == 'error' %}danger{% else %}{{ mensaje.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ mensaje }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
         {% block contenido %}{% endblock %}
     </main>
 

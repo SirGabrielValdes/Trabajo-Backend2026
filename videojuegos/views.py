@@ -116,7 +116,7 @@ def accion_pendiente(request, entidad, accion, pk=None):
     """Marcador de posición para los botones Agregar / Modificar / Eliminar.
 
     Las operaciones CRUD desde la interfaz se implementarán en la siguiente
-    evaluación; por ahora se realizan desde Django Admin.
+    evaluación.
     """
     if entidad not in ENTIDADES or accion not in ("agregar", "modificar", "eliminar"):
         raise Http404("Acción no válida")
@@ -129,6 +129,5 @@ def accion_pendiente(request, entidad, accion, pk=None):
         "nombre": nombre,
         "registro": registro,
         "url_volver": url_volver,
-        "url_admin": f"admin:videojuegos_{modelo._meta.model_name}_changelist",
     }
     return render(request, "accion_pendiente.html", contexto)

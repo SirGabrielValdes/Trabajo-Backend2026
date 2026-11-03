@@ -109,6 +109,5 @@ def accion_pendiente(request, entidad, accion, pk=None):
         "nombre": nombre,
         "registro": registro,
         "url_volver": url_volver,
-        "url_admin": f"admin:peliculas_{modelo._meta.model_name}_changelist",
     }
     return render(request, "accion_pendiente.html", contexto)

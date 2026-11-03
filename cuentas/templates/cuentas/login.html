@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar sesión{% endblock %}
+{% block encabezado %}Iniciar sesión{% endblock %}
+{% block subtitulo %}Ingresa con tu usuario y contraseña{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                {% if next and not user.is_authenticated %}
+                <div class="alert alert-warning">Debes iniciar sesión para acceder a esa página.</div>
+                {% endif %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "includes/formulario_campos.html" %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Ingresar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -121,6 +121,24 @@ LOGIN_URL = "cuentas:login"
 LOGIN_REDIRECT_URL = "cuentas:panel"
 LOGOUT_REDIRECT_URL = "cuentas:login"
 
+# El enlace de recuperación de contraseña (token) vence en 1 hora
+PASSWORD_RESET_TIMEOUT = 60 * 60
+
+
+# Correo electrónico (recuperación de contraseña).
+# Con EMAIL_HOST definido en .env se envían correos reales por SMTP (ej: Gmail);
+# si no, el correo se muestra en la terminal (útil para desarrollo).
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in ("true", "1", "si")
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "ZonaOcio <no-responder@zonaocio.local>")
+
 
 # Internacionalización
 LANGUAGE_CODE = "es-cl"

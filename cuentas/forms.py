@@ -1,5 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm,
+)
 from django.contrib.auth.models import Group, User
 
 from zonaocio.formularios import FormularioBootstrap
@@ -9,6 +11,14 @@ from .roles import ROLES
 
 class LoginForm(FormularioBootstrap, AuthenticationForm):
     """Formulario de inicio de sesión (usuario y contraseña) con estilos Bootstrap."""
+
+
+class RecuperarClaveForm(FormularioBootstrap, PasswordResetForm):
+    """Paso 1 de la recuperación: el usuario ingresa su correo electrónico."""
+
+
+class NuevaClaveForm(FormularioBootstrap, SetPasswordForm):
+    """Paso 2 de la recuperación: el usuario define su nueva contraseña."""
 
 
 class PerfilMixin(forms.Form):

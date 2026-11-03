@@ -7,13 +7,16 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count, ProtectedError, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
 
 from peliculas.models import Pelicula
 from ventas.models import Cliente, Venta
 from videojuegos.models import Videojuego
 
-from .forms import LoginForm, UsuarioCrearForm, UsuarioModificarForm
+from .forms import (
+    LoginForm, NuevaClaveForm, RecuperarClaveForm, UsuarioCrearForm, UsuarioModificarForm,
+)
 from .roles import ADMINISTRADOR, ADMINISTRATIVO, ROLES, SUPERVISOR, obtener_rol
 
 # Mantenedores del sistema: (nombre, ruta del listado, app, modelo)
@@ -38,6 +41,34 @@ class IniciarSesionView(auth_views.LoginView):
     template_name = "cuentas/login.html"
     authentication_form = LoginForm
     redirect_authenticated_user = True
+
+
+# ---------------------------------------------------------------------------
+# Recuperación de contraseña por correo electrónico (sistema de Django).
+# 1) El usuario ingresa su correo  2) Django genera un token seguro y envía el
+# enlace  3) Al abrirlo se valida el token  4) Se define la nueva contraseña.
+# ---------------------------------------------------------------------------
+class RecuperarClaveView(auth_views.PasswordResetView):
+    template_name = "cuentas/recuperar/solicitar.html"
+    form_class = RecuperarClaveForm
+    subject_template_name = "cuentas/recuperar/asunto.txt"
+    email_template_name = "cuentas/recuperar/correo.txt"
+    html_email_template_name = "cuentas/recuperar/correo.html"
+    success_url = reverse_lazy("cuentas:recuperar_enviado")
+
+
+class RecuperarEnviadoView(auth_views.PasswordResetDoneView):
+    template_name = "cuentas/recuperar/enviado.html"
+
+
+class NuevaClaveView(auth_views.PasswordResetConfirmView):
+    template_name = "cuentas/recuperar/nueva_clave.html"
+    form_class = NuevaClaveForm
+    success_url = reverse_lazy("cuentas:recuperar_completado")
+
+
+class RecuperarCompletadoView(auth_views.PasswordResetCompleteView):
+    template_name = "cuentas/recuperar/completado.html"
 
 
 def mantenedores_autorizados(usuario):

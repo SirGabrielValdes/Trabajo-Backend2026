@@ -1,0 +1,7 @@
+{% comment %}Tarjeta con un número destacado. Parámetros: valor, etiqueta, color{% endcomment %}
+<div class="card border-0 shadow-sm h-100">
+    <div class="card-body text-center">
+        <p class="display-6 fw-bold text-{{ color|default:'primary' }} mb-0">{{ valor }}</p>
+        <p class="text-muted mb-0">{{ etiqueta }}</p>
+    </div>
+</div>

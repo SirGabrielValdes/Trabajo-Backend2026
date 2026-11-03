@@ -1,0 +1,50 @@
+{% extends "cuentas/panel_base.html" %}
+
+{% block panel %}
+<h2 class="h5 fw-bold mb-3">Información operacional</h2>
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=ventas_hoy.cantidad etiqueta="Ventas de hoy" color="success" %}</div>
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=ventas_hoy.monto etiqueta="Vendido hoy" color="success" %}</div>
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=ventas_total.cantidad etiqueta="Ventas totales" %}</div>
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=stock_bajo|length etiqueta="Juegos con stock bajo" color="warning" %}</div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Transacciones autorizadas</div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'ventas:nueva' %}" class="btn btn-success">+ Nueva venta</a>
+                <a href="{% url 'ventas:listado' %}" class="btn btn-outline-primary">Ventas (puede anular)</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Ventas de hoy por vendedor</div>
+            <ul class="list-group list-group-flush">
+                {% for fila in ventas_por_vendedor %}
+                <li class="list-group-item d-flex justify-content-between">
+                    {{ fila.vendedor__username }}
+                    <span>{{ fila.cantidad }} venta{{ fila.cantidad|pluralize }}</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Sin ventas hoy.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Stock bajo (≤ 3 unidades)</div>
+            {% include "cuentas/_stock_bajo.html" %}
+        </div>
+    </div>
+</div>
+
+<h2 class="h5 fw-bold mb-3">Mantenedores autorizados</h2>
+<div class="mb-4">{% include "cuentas/_mantenedores.html" %}</div>
+
+<h2 class="h5 fw-bold mb-3">Últimas ventas</h2>
+<div class="card shadow-sm">{% include "cuentas/_ultimas_ventas.html" with ventas=ultimas_ventas mostrar_vendedor=True %}</div>
+{% endblock %}

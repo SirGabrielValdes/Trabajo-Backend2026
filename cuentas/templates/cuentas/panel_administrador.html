@@ -1,0 +1,50 @@
+{% extends "cuentas/panel_base.html" %}
+
+{% block panel %}
+<h2 class="h5 fw-bold mb-3">Visualización global del sistema</h2>
+<div class="row row-cols-2 row-cols-lg-3 row-cols-xl-6 g-3 mb-4">
+    {% for etiqueta, valor in totales.items %}
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=valor etiqueta=etiqueta %}</div>
+    {% endfor %}
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=ventas_total.cantidad etiqueta="Ventas totales" color="success" %}</div>
+    <div class="col">{% include "cuentas/_tarjeta_dato.html" with valor=ventas_total.monto etiqueta="Monto vendido" color="success" %}</div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Gestión de usuarios</div>
+            <ul class="list-group list-group-flush">
+                {% for nombre, cantidad in usuarios_por_rol %}
+                <li class="list-group-item d-flex justify-content-between">{{ nombre }} <span class="badge text-bg-primary">{{ cantidad }}</span></li>
+                {% endfor %}
+            </ul>
+            <div class="card-body">
+                {% block acceso_usuarios %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Transacciones</div>
+            <div class="card-body d-grid gap-2">
+                <p class="mb-1">Hoy: <strong>{{ ventas_hoy.cantidad }}</strong> venta{{ ventas_hoy.cantidad|pluralize }} por <strong>{{ ventas_hoy.monto }}</strong></p>
+                <a href="{% url 'ventas:nueva' %}" class="btn btn-success">+ Nueva venta</a>
+                <a href="{% url 'ventas:listado' %}" class="btn btn-outline-primary">Todas las ventas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Stock bajo (≤ 3 unidades)</div>
+            {% include "cuentas/_stock_bajo.html" %}
+        </div>
+    </div>
+</div>
+
+<h2 class="h5 fw-bold mb-3">Todos los mantenedores</h2>
+<div class="mb-4">{% include "cuentas/_mantenedores.html" %}</div>
+
+<h2 class="h5 fw-bold mb-3">Últimas ventas</h2>
+<div class="card shadow-sm">{% include "cuentas/_ultimas_ventas.html" with ventas=ultimas_ventas mostrar_vendedor=True %}</div>
+{% endblock %}

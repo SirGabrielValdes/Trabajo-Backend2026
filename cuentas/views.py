@@ -1,17 +1,19 @@
 from datetime import datetime, time
 
+from django.contrib import messages
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
-from django.db.models import Count, Sum
-from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
+from django.db.models import Count, ProtectedError, Q, Sum
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from peliculas.models import Pelicula
 from ventas.models import Cliente, Venta
 from videojuegos.models import Videojuego
 
-from .forms import LoginForm
+from .forms import LoginForm, UsuarioCrearForm, UsuarioModificarForm
 from .roles import ADMINISTRADOR, ADMINISTRATIVO, ROLES, SUPERVISOR, obtener_rol
 
 # Mantenedores del sistema: (nombre, ruta del listado, app, modelo)
@@ -116,3 +118,80 @@ def panel(request):
         plantilla = "cuentas/panel_sin_perfil.html"
 
     return render(request, plantilla, contexto)
+
+
+# ---------------------------------------------------------------------------
+# Gestión de usuarios (solo perfiles con permisos sobre auth.User)
+# ---------------------------------------------------------------------------
+def verificar_superusuario(request, usuario):
+    """Solo un superusuario puede modificar o eliminar a otro superusuario."""
+    if usuario.is_superuser and not request.user.is_superuser:
+        raise PermissionDenied
+
+
+@login_required
+@permission_required("auth.view_user", raise_exception=True)
+def usuarios(request):
+    """Listado y búsqueda de usuarios con su perfil."""
+    busqueda = request.GET.get("q", "").strip()
+    registros = User.objects.prefetch_related("groups").order_by("username")
+    if busqueda:
+        registros = registros.filter(
+            Q(username__icontains=busqueda) | Q(first_name__icontains=busqueda)
+            | Q(last_name__icontains=busqueda) | Q(email__icontains=busqueda)
+            | Q(groups__name__icontains=busqueda)
+        ).distinct()
+    return render(request, "cuentas/usuarios.html", {"registros": registros, "busqueda": busqueda})
+
+
+@login_required
+@permission_required("auth.add_user", raise_exception=True)
+def usuario_crear(request):
+    formulario = UsuarioCrearForm(request.POST or None)
+    if request.method == "POST" and formulario.is_valid():
+        usuario = formulario.save()
+        messages.success(request, f"Usuario «{usuario.username}» creado con perfil {formulario.cleaned_data['perfil']}.")
+        return redirect("cuentas:usuarios")
+    contexto = {"form": formulario, "titulo": "Agregar usuario", "url_volver": "cuentas:usuarios"}
+    return render(request, "crud/formulario.html", contexto)
+
+
+@login_required
+@permission_required("auth.change_user", raise_exception=True)
+def usuario_modificar(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+    verificar_superusuario(request, usuario)
+    formulario = UsuarioModificarForm(request.POST or None, instance=usuario)
+    if request.method == "POST" and formulario.is_valid():
+        formulario.save()
+        messages.success(request, f"Usuario «{usuario.username}» modificado correctamente.")
+        return redirect("cuentas:usuarios")
+    contexto = {
+        "form": formulario, "titulo": "Modificar usuario", "registro": usuario,
+        "url_volver": "cuentas:usuarios",
+    }
+    return render(request, "crud/formulario.html", contexto)
+
+
+@login_required
+@permission_required("auth.delete_user", raise_exception=True)
+def usuario_eliminar(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+    verificar_superusuario(request, usuario)
+    if usuario == request.user:
+        messages.error(request, "No puedes eliminar tu propio usuario.")
+        return redirect("cuentas:usuarios")
+    if request.method == "POST":
+        try:
+            usuario.delete()
+        except ProtectedError:
+            messages.error(
+                request,
+                f"No se puede eliminar a «{usuario.username}» porque tiene ventas registradas. "
+                "Puedes desactivarlo desde Modificar.",
+            )
+        else:
+            messages.success(request, f"Usuario «{usuario.username}» eliminado.")
+        return redirect("cuentas:usuarios")
+    contexto = {"titulo": "Eliminar usuario", "registro": usuario, "url_volver": "cuentas:usuarios"}
+    return render(request, "crud/confirmar_eliminar.html", contexto)

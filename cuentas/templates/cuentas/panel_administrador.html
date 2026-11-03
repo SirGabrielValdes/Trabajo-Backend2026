@@ -20,7 +20,7 @@
                 {% endfor %}
             </ul>
             <div class="card-body">
-                {% block acceso_usuarios %}{% endblock %}
+                <a href="{% url 'cuentas:usuarios' %}" class="btn btn-primary w-100">Gestionar usuarios</a>
             </div>
         </div>
     </div>

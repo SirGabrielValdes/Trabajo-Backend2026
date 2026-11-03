@@ -78,6 +78,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'cuentas:panel' %}">Mi panel</a></li>
+                            {% if perms.auth.view_user %}<li><a class="dropdown-item" href="{% url 'cuentas:usuarios' %}">Gestión de usuarios</a></li>{% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form method="post" action="{% url 'cuentas:logout' %}">

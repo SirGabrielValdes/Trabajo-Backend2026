@@ -1,7 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Q
-from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
+from zonaocio import crud
+from zonaocio.crud import Mantenedor
+
+from .forms import DesarrolladoraForm, GeneroForm, PlataformaForm, VideojuegoForm
 from .models import Desarrolladora, Genero, Plataforma, Videojuego
 
 # Opciones de orden permitidas: valor del parámetro GET -> campo del ORM
@@ -10,14 +14,6 @@ ORDENES = {
     "precio": "precio",
     "calificacion": "-calificacion",
     "anio": "-anio",
-}
-
-# Entidades de esta app que tendrán CRUD desde la interfaz (Evaluación N°3)
-ENTIDADES = {
-    "videojuegos": ("videojuego", Videojuego, "videojuegos:listado"),
-    "generos": ("género", Genero, "videojuegos:generos"),
-    "desarrolladoras": ("desarrolladora", Desarrolladora, "videojuegos:desarrolladoras"),
-    "plataformas": ("plataforma", Plataforma, "videojuegos:plataformas"),
 }
 
 
@@ -112,22 +108,28 @@ def plataformas(request):
     return render(request, "videojuegos/plataformas.html", {"registros": registros, "busqueda": busqueda})
 
 
-def accion_pendiente(request, entidad, accion, pk=None):
-    """Marcador de posición para los botones Agregar / Modificar / Eliminar.
+# ---------------------------------------------------------------------------
+# Mantenedores: crear, modificar y eliminar registros desde Django Templates.
+# El listado y la búsqueda están en las vistas de arriba.
+# ---------------------------------------------------------------------------
+MANTENEDORES = {
+    "videojuegos": Mantenedor(Videojuego, VideojuegoForm, "videojuegos:listado"),
+    "generos": Mantenedor(Genero, GeneroForm, "videojuegos:generos"),
+    "desarrolladoras": Mantenedor(Desarrolladora, DesarrolladoraForm, "videojuegos:desarrolladoras"),
+    "plataformas": Mantenedor(Plataforma, PlataformaForm, "videojuegos:plataformas"),
+}
 
-    Las operaciones CRUD desde la interfaz se implementarán en la siguiente
-    evaluación.
-    """
-    if entidad not in ENTIDADES or accion not in ("agregar", "modificar", "eliminar"):
-        raise Http404("Acción no válida")
 
-    nombre, modelo, url_volver = ENTIDADES[entidad]
-    registro = get_object_or_404(modelo, pk=pk) if pk is not None else None
+@login_required
+def agregar(request, entidad):
+    return crud.crear(request, crud.obtener_mantenedor(MANTENEDORES, entidad))
 
-    contexto = {
-        "accion": accion,
-        "nombre": nombre,
-        "registro": registro,
-        "url_volver": url_volver,
-    }
-    return render(request, "accion_pendiente.html", contexto)
+
+@login_required
+def modificar(request, entidad, pk):
+    return crud.modificar(request, crud.obtener_mantenedor(MANTENEDORES, entidad), pk)
+
+
+@login_required
+def eliminar(request, entidad, pk):
+    return crud.eliminar(request, crud.obtener_mantenedor(MANTENEDORES, entidad), pk)

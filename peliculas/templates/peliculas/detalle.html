@@ -36,7 +36,7 @@
             <a href="{% url 'peliculas:listado' %}" class="btn btn-outline-secondary">&larr; Volver a la cartelera</a>
             {% url 'peliculas:modificar' 'peliculas' pelicula.pk as url_modificar %}
             {% url 'peliculas:eliminar' 'peliculas' pelicula.pk as url_eliminar %}
-            {% include "includes/botones_fila.html" %}
+            {% include "includes/botones_fila.html" with puede_modificar=perms.peliculas.change_pelicula puede_eliminar=perms.peliculas.delete_pelicula %}
         </div>
     </div>
 </div>

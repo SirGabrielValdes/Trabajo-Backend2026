@@ -10,7 +10,19 @@ Parámetro: form
 {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
 {% for campo in form.visible_fields %}
 <div class="mb-3">
-    {% if campo.widget_type == "checkbox" %}
+    {% if campo.widget_type == "checkboxselectmultiple" %}
+    <label class="form-label">
+        {{ campo.label }}{% if campo.field.required %} <span class="text-danger">*</span>{% endif %}
+    </label>
+    <div class="border rounded p-2 opciones-multiples">
+        {% for opcion in campo %}
+        <div class="form-check form-check-inline">
+            {{ opcion.tag }}
+            <label class="form-check-label" for="{{ opcion.id_for_label }}">{{ opcion.choice_label }}</label>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif campo.widget_type == "checkbox" %}
     <div class="form-check">
         {{ campo }}
         <label class="form-check-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>

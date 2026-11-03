@@ -42,7 +42,7 @@
             <a href="{% url 'videojuegos:listado' %}" class="btn btn-outline-secondary">&larr; Volver al catálogo</a>
             {% url 'videojuegos:modificar' 'videojuegos' juego.pk as url_modificar %}
             {% url 'videojuegos:eliminar' 'videojuegos' juego.pk as url_eliminar %}
-            {% include "includes/botones_fila.html" %}
+            {% include "includes/botones_fila.html" with puede_modificar=perms.videojuegos.change_videojuego puede_eliminar=perms.videojuegos.delete_videojuego %}
         </div>
     </div>
 </div>

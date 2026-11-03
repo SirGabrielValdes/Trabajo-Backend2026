@@ -6,7 +6,7 @@
 
 {% block contenido %}
 {% url 'peliculas:agregar' 'generos' as url_agregar %}
-{% include "includes/barra_acciones.html" with texto_busqueda="Buscar género" %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Buscar género" puede_agregar=perms.peliculas.add_genero %}
 
 <div class="table-responsive">
     <table class="table table-hover align-middle">
@@ -31,7 +31,7 @@
                 <td class="text-end">
                     {% url 'peliculas:modificar' 'generos' genero.pk as url_modificar %}
                     {% url 'peliculas:eliminar' 'generos' genero.pk as url_eliminar %}
-                    {% include "includes/botones_fila.html" %}
+                    {% include "includes/botones_fila.html" with puede_modificar=perms.peliculas.change_genero puede_eliminar=perms.peliculas.delete_genero %}
                 </td>
             </tr>
             {% empty %}

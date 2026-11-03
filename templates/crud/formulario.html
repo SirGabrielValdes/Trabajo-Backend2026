@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block encabezado %}{{ titulo|capfirst }}{% endblock %}
+{% block subtitulo %}{% if registro %}Editando: {{ registro }}{% else %}Completa los datos del nuevo registro{% endif %}{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "includes/formulario_campos.html" %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <a href="{% url url_volver %}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

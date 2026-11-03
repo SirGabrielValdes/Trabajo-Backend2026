@@ -1,16 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
-from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 
-from .models import Clasificacion, Director, Genero, Pelicula
+from zonaocio import crud
+from zonaocio.crud import Mantenedor
 
-# Entidades de esta app que tendrán CRUD desde la interfaz (Evaluación N°3)
-ENTIDADES = {
-    "peliculas": ("película", Pelicula, "peliculas:listado"),
-    "generos": ("género", Genero, "peliculas:generos"),
-    "directores": ("director", Director, "peliculas:directores"),
-    "clasificaciones": ("clasificación", Clasificacion, "peliculas:clasificaciones"),
-}
+from .forms import ClasificacionForm, DirectorForm, GeneroForm, PeliculaForm
+from .models import Clasificacion, Director, Genero, Pelicula
 
 
 def listado(request):
@@ -96,18 +92,28 @@ def clasificaciones(request):
     return render(request, "peliculas/clasificaciones.html", {"registros": registros, "busqueda": busqueda})
 
 
-def accion_pendiente(request, entidad, accion, pk=None):
-    """Marcador de posición para los botones Agregar / Modificar / Eliminar."""
-    if entidad not in ENTIDADES or accion not in ("agregar", "modificar", "eliminar"):
-        raise Http404("Acción no válida")
+# ---------------------------------------------------------------------------
+# Mantenedores: crear, modificar y eliminar registros desde Django Templates.
+# El listado y la búsqueda están en las vistas de arriba.
+# ---------------------------------------------------------------------------
+MANTENEDORES = {
+    "peliculas": Mantenedor(Pelicula, PeliculaForm, "peliculas:listado"),
+    "generos": Mantenedor(Genero, GeneroForm, "peliculas:generos"),
+    "directores": Mantenedor(Director, DirectorForm, "peliculas:directores"),
+    "clasificaciones": Mantenedor(Clasificacion, ClasificacionForm, "peliculas:clasificaciones"),
+}
 
-    nombre, modelo, url_volver = ENTIDADES[entidad]
-    registro = get_object_or_404(modelo, pk=pk) if pk is not None else None
 
-    contexto = {
-        "accion": accion,
-        "nombre": nombre,
-        "registro": registro,
-        "url_volver": url_volver,
-    }
-    return render(request, "accion_pendiente.html", contexto)
+@login_required
+def agregar(request, entidad):
+    return crud.crear(request, crud.obtener_mantenedor(MANTENEDORES, entidad))
+
+
+@login_required
+def modificar(request, entidad, pk):
+    return crud.modificar(request, crud.obtener_mantenedor(MANTENEDORES, entidad), pk)
+
+
+@login_required
+def eliminar(request, entidad, pk):
+    return crud.eliminar(request, crud.obtener_mantenedor(MANTENEDORES, entidad), pk)

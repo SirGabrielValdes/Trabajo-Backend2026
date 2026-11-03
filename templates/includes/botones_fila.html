@@ -1,8 +1,11 @@
 {% comment %}
 Botones Modificar y Eliminar de un registro.
-Parámetros: url_modificar, url_eliminar
+Parámetros: url_modificar, url_eliminar, puede_modificar, puede_eliminar
+Cada botón solo se muestra si el perfil del usuario tiene el permiso.
 {% endcomment %}
+{% if puede_modificar or puede_eliminar %}
 <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-    <a href="{{ url_modificar }}" class="btn btn-outline-warning">Modificar</a>
-    <a href="{{ url_eliminar }}" class="btn btn-outline-danger">Eliminar</a>
+    {% if puede_modificar %}<a href="{{ url_modificar }}" class="btn btn-outline-warning">Modificar</a>{% endif %}
+    {% if puede_eliminar %}<a href="{{ url_eliminar }}" class="btn btn-outline-danger">Eliminar</a>{% endif %}
 </div>
+{% endif %}

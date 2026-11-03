@@ -6,7 +6,7 @@
 
 {% block contenido %}
 {% url 'peliculas:agregar' 'directores' as url_agregar %}
-{% include "includes/barra_acciones.html" with texto_busqueda="Nombre o nacionalidad" %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Nombre o nacionalidad" puede_agregar=perms.peliculas.add_director %}
 
 <div class="table-responsive">
     <table class="table table-striped table-hover align-middle">
@@ -35,7 +35,7 @@
                 <td class="text-end text-nowrap">
                     {% url 'peliculas:modificar' 'directores' director.pk as url_modificar %}
                     {% url 'peliculas:eliminar' 'directores' director.pk as url_eliminar %}
-                    {% include "includes/botones_fila.html" %}
+                    {% include "includes/botones_fila.html" with puede_modificar=perms.peliculas.change_director puede_eliminar=perms.peliculas.delete_director %}
                 </td>
             </tr>
             {% empty %}

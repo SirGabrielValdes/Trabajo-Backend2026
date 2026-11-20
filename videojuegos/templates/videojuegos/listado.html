@@ -10,7 +10,9 @@
 
 <form method="get" class="row g-2 align-items-end mb-4" role="search">
     <div class="col-md-2 d-grid">
+        {% if perms.videojuegos.add_videojuego %}
         <a href="{% url 'videojuegos:agregar' 'videojuegos' %}" class="btn btn-success">+ Agregar</a>
+        {% endif %}
     </div>
     <div class="col-md-4">
         <label for="q" class="form-label">Buscar</label>

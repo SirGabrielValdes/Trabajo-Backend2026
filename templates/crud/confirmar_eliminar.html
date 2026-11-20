@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block encabezado %}{{ titulo|capfirst }}{% endblock %}
+{% block subtitulo %}Esta acción no se puede deshacer{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body p-4">
+                <p class="fs-5">¿Seguro que deseas eliminar <strong>{{ registro }}</strong>?</p>
+                <form method="post" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                    <a href="{% url url_volver %}" class="btn btn-outline-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

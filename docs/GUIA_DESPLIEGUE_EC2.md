@@ -174,9 +174,28 @@ DB_USER=zonaocio_user
 DB_PASSWORD=CLAVE_SEGURA
 DB_HOST=localhost
 DB_PORT=3306
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=tu_correo@gmail.com
+EMAIL_HOST_PASSWORD=contrasena-de-aplicacion
+DEFAULT_FROM_EMAIL=ZonaOcio <tu_correo@gmail.com>
 ```
 
 Guardar con `Ctrl + O`, `Enter` y salir con `Ctrl + X`.
+
+### Correo para recuperar contraseñas (Gmail)
+
+La recuperación de contraseña envía un correo real. Con Gmail se usa una **contraseña de aplicación**
+(no la contraseña normal de la cuenta):
+
+1. En la cuenta de Google, activar la **verificación en 2 pasos**.
+2. Entrar a <https://myaccount.google.com/apppasswords>, crear una contraseña de aplicación llamada `ZonaOcio`.
+3. Copiar los 16 caracteres **sin espacios** en `EMAIL_HOST_PASSWORD`.
+4. En `EMAIL_HOST_USER` y `DEFAULT_FROM_EMAIL` va el mismo correo de Gmail.
+
+> Si `EMAIL_HOST` queda vacío, el correo no se envía: se muestra en el registro del servidor
+> (`sudo journalctl -u zonaocio -n 50`). Sirve solo para pruebas.
 
 > El archivo `.env` **no** está en GitHub (se ignora en `.gitignore`). Por eso se crea directamente en el servidor.
 
@@ -190,7 +209,8 @@ python manage.py migrate                 # crea todas las tablas en MySQL
 python manage.py showmigrations          # [X] = migración aplicada
 python manage.py importar_videojuegos    # migra videojuegos.json a la base de datos
 python manage.py importar_peliculas      # migra peliculas.json a la base de datos
-python manage.py createsuperuser         # usuario para Django Admin
+python manage.py crear_roles             # perfiles Administrador, Supervisor y Administrativo
+python manage.py createsuperuser         # primer usuario (acceso total, perfil Administrador)
 python manage.py collectstatic --noinput # reúne Bootstrap, CSS e imágenes
 ```
 
@@ -229,27 +249,46 @@ sudo systemctl reload apache2
 | URL | Qué se ve |
 |---|---|
 | `http://IP_PUBLICA/` | Sitio ZonaOcio |
-| `http://IP_PUBLICA/admin/` | Django Admin (usuario creado con `createsuperuser`) |
+| `http://IP_PUBLICA/cuentas/login/` | Inicio de sesión (usuario creado con `createsuperuser`) |
 | `http://IP_PUBLICA/phpmyadmin/` | phpMyAdmin (usuario `zonaocio_user` y su clave) |
 
 📸 **CAPTURAS:**
 - Sitio funcionando con la IP pública en la barra de direcciones.
-- Django Admin con todas las entidades.
+- Login y Dashboard del Administrador.
 - phpMyAdmin: lista de tablas de `zonaocio_db`, pestaña **Browse** de una tabla con registros
   y **Structure → Relation view** de `videojuegos_videojuego` o `peliculas_pelicula` (llaves foráneas).
 
 ---
 
-## 12. Crear registros desde Django Admin
+## 12. Crear usuarios y asignar perfiles
 
-La evaluación pide demostrar **registros creados mediante Django Admin**. Por ejemplo:
+Desde la Evaluación N°3 **no se usa Django Admin**: todo se hace desde las páginas del sitio.
 
-1. **Videojuegos → Géneros → Añadir:** `Terror`.
-2. **Videojuegos → Videojuegos → Añadir:** un videojuego nuevo usando ese género, una desarrolladora y plataformas.
-3. **Películas → Directores → Añadir:** un director nuevo, y luego una película asociada a él.
-4. Verificar en phpMyAdmin que los registros nuevos aparecen en las tablas.
+1. Ingresar en `http://IP_PUBLICA/cuentas/login/` con el superusuario.
+2. Menú del usuario → **Gestión de usuarios** → **+ Agregar**.
+3. Crear al menos un usuario **Supervisor** y uno **Administrativo**, con un **correo real** (sirve para
+   probar la recuperación de contraseña).
+4. Cerrar sesión e ingresar con cada usuario para ver su dashboard y sus restricciones.
 
-📸 **CAPTURA:** el registro creado en Django Admin y el mismo registro en phpMyAdmin.
+📸 **CAPTURA:** listado de usuarios con sus perfiles y el dashboard de cada perfil.
+
+---
+
+## 13. Actualizar una instancia que ya tenía la Evaluación N°2
+
+Si la EC2 ya tenía el proyecto funcionando, basta con traer los cambios:
+
+```bash
+cd ~/Trabajo-Backend2026
+source venv/bin/activate
+git pull
+pip install -r requirements.txt
+python manage.py migrate                 # agrega stock y las tablas de ventas
+python manage.py crear_roles             # crea los perfiles y sus permisos
+python manage.py collectstatic --noinput
+nano .env                                # agregar las variables EMAIL_* (paso 7)
+sudo systemctl restart zonaocio
+```
 
 ---
 
@@ -271,29 +310,31 @@ sudo systemctl restart zonaocio
 |---|---|
 | **Bad Request (400)** | La IP no está en `ALLOWED_HOSTS` del `.env`. Agregarla y ejecutar `sudo systemctl restart zonaocio`. |
 | **La IP cambió** | Al detener/iniciar la instancia, AWS asigna otra IP pública. Actualizar `ALLOWED_HOSTS` y `CSRF_TRUSTED_ORIGINS` y reiniciar el servicio. |
-| **CSRF verification failed** al entrar al Admin | Revisar `CSRF_TRUSTED_ORIGINS=http://IP_PUBLICA` en el `.env` y reiniciar el servicio. |
+| **CSRF verification failed** al iniciar sesión | Revisar `CSRF_TRUSTED_ORIGINS=http://IP_PUBLICA` en el `.env` y reiniciar el servicio. |
 | **503 Service Unavailable** | Gunicorn no está corriendo: `sudo journalctl -u zonaocio -n 50` para ver el error. |
 | **phpMyAdmin muestra código PHP** | Falta `libapache2-mod-php`: instalarlo y `sudo systemctl restart apache2`. |
 | **No carga la página** | Revisar que el Security Group tenga abierto el puerto 80. |
 | **El sitio y phpMyAdmin cargan muy lento** | Falta memoria: crear el swap del paso 3 y dejar Gunicorn con `--workers 2`. Revisar también en EC2 → *Monitoring* que el *CPU credit balance* no esté en 0. |
+| **No llega el correo de recuperación** | Revisar spam. Revisar `EMAIL_*` en `.env` (contraseña de aplicación de 16 caracteres sin espacios, puerto 587, `EMAIL_USE_TLS=True`), reiniciar el servicio y ver el error con `sudo journalctl -u zonaocio -n 50`. El usuario debe tener ese correo registrado. |
+| **El enlace del correo dice "no válido"** | El enlace vence en 1 hora y sirve una sola vez. Solicitar uno nuevo. |
 | **Tarda varios segundos antes de abrir** | El navegador intenta `https://` primero. Escribir la dirección completa: `http://IP_PUBLICA/`. |
 
 ---
 
-## Checklist para la revisión presencial
+## Checklist para la revisión presencial (Evaluación N°3)
 
 | Requisito | Cómo demostrarlo |
 |---|---|
-| Conexión a EC2 | `ssh -i zonaocio-clave.pem ubuntu@IP_PUBLICA` o EC2 Instance Connect |
-| Proyecto clonado desde GitHub | `cd ~/Trabajo-Backend2026 && git remote -v && git log --oneline` |
-| Entorno virtual activo | `source venv/bin/activate` → aparece `(venv)` |
-| Servidor web ejecutando la app | `sudo systemctl status zonaocio` y `sudo systemctl status apache2` |
-| Modelos creados | Mostrar `videojuegos/models.py` y `peliculas/models.py` |
-| Migraciones aplicadas | `python manage.py showmigrations` y los archivos `*/migrations/0001_initial.py` |
-| Variables de entorno | `cat .env.example` y `zonaocio/settings.py` (usa `os.environ` / `load_dotenv`) |
-| Tablas en phpMyAdmin | `http://IP_PUBLICA/phpmyadmin/` → base `zonaocio_db` |
-| Relaciones | phpMyAdmin → tabla → **Structure** → **Relation view** |
-| Registros almacenados | phpMyAdmin → tabla → **Browse** |
-| Django Admin: crear, editar, eliminar, buscar | `http://IP_PUBLICA/admin/` |
-| Listados desde la BD con ORM | Menús **Videojuegos** y **Películas** del sitio |
-| Botones Agregar, Modificar, Eliminar y Buscar | Visibles en cada listado |
+| Inicio y cierre de sesión | `http://IP_PUBLICA/cuentas/login/` → ingresar → menú del usuario → **Cerrar sesión** |
+| Protección de vistas | Sin sesión, abrir `http://IP_PUBLICA/ventas/` → redirige al login |
+| Usuarios y perfiles | Menú del usuario → **Gestión de usuarios** → crear usuario y asignar perfil |
+| Restricción de accesos | Con Administrativo, abrir `http://IP_PUBLICA/cuentas/usuarios/` → **Acceso denegado (403)** |
+| Recuperación de contraseña | Login → **¿Olvidaste tu contraseña?** → correo → abrir enlace → nueva contraseña → ingresar |
+| Dashboards | Ingresar con Administrador, Supervisor y Administrativo → **Panel** |
+| Mantenedores (CRUD) | Ej. **Videojuegos → Géneros**: Agregar, Buscar, Modificar, Eliminar (con validaciones) |
+| Transacción | **Ventas → Nueva venta** → ver detalle, total y descuento de stock |
+| Registro en BD | phpMyAdmin → `ventas_venta` y `ventas_detalleventa` → **Browse** |
+| Relaciones | phpMyAdmin → `ventas_detalleventa` → **Structure → Relation view** |
+| Migraciones | `python manage.py showmigrations` |
+| GitHub | `git log --oneline` (desarrollo incremental) y el repositorio en GitHub |
+| AWS | Aplicación funcionando en `http://IP_PUBLICA/` desde la EC2 |

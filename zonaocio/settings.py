@@ -1,12 +1,14 @@
 """
-Configuración del proyecto ZonaOcio (Evaluación Sumativa N°2).
+Configuración del proyecto ZonaOcio (Evaluación Sumativa N°3).
 
 Sitio web modular compuesto por dos aplicaciones:
   - videojuegos: página de inicio + catálogo de videojuegos.
   - peliculas:   cartelera de películas.
 
 La información se almacena en una base de datos relacional MySQL/MariaDB
-y se administra desde Django Admin.
+y se administra desde interfaces propias (Django Templates), con inicio de
+sesión, perfiles de usuario (grupos y permisos) y recuperación de contraseña
+por correo electrónico. No se utiliza Django Admin.
 
 Las configuraciones sensibles (SECRET_KEY, credenciales de la base de
 datos, etc.) NO se escriben en el código: se leen desde el archivo .env
@@ -41,7 +43,6 @@ CSRF_TRUSTED_ORIGINS = variable_lista("CSRF_TRUSTED_ORIGINS")
 
 # Aplicaciones
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     # Aplicaciones propias del proyecto
     "videojuegos",
     "peliculas",
+    "cuentas",
+    "ventas",
 ]
 
 MIDDLEWARE = [
@@ -77,6 +80,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cuentas.context_processors.rol_usuario",
             ],
         },
     },
@@ -103,13 +107,37 @@ DATABASES = {
 }
 
 
-# Validación de contraseñas (usuarios de Django Admin)
+# Validación de contraseñas de los usuarios
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+
+# Autenticación
+LOGIN_URL = "cuentas:login"
+LOGIN_REDIRECT_URL = "cuentas:panel"
+LOGOUT_REDIRECT_URL = "cuentas:login"
+
+# El enlace de recuperación de contraseña (token) vence en 1 hora
+PASSWORD_RESET_TIMEOUT = 60 * 60
+
+
+# Correo electrónico (recuperación de contraseña).
+# Con EMAIL_HOST definido en .env se envían correos reales por SMTP (ej: Gmail);
+# si no, el correo se muestra en la terminal (útil para desarrollo).
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in ("true", "1", "si")
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "ZonaOcio <no-responder@zonaocio.local>")
 
 
 # Internacionalización

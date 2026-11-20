@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ venta }}{% endblock %}
+{% block encabezado %}{{ venta }}{% endblock %}
+{% block subtitulo %}{{ venta.fecha|date:"d/m/Y H:i" }} &middot; Vendedor: {{ venta.vendedor.get_username }}{% endblock %}
+
+{% block contenido %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Cliente</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Nombre:</strong> {{ venta.cliente.nombre }}</li>
+                <li class="list-group-item"><strong>RUT:</strong> {{ venta.cliente.rut }}</li>
+                <li class="list-group-item"><strong>Correo:</strong> {{ venta.cliente.email|default:"—" }}</li>
+                <li class="list-group-item"><strong>Teléfono:</strong> {{ venta.cliente.telefono|default:"—" }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">Detalle</div>
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr><th>Videojuego</th><th class="text-center">Cantidad</th><th class="text-end">Precio</th><th class="text-end">Subtotal</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles %}
+                        <tr>
+                            <td><a href="{% url 'videojuegos:detalle' detalle.videojuego.pk %}">{{ detalle.videojuego.titulo }}</a></td>
+                            <td class="text-center">{{ detalle.cantidad }}</td>
+                            <td class="text-end text-nowrap">{{ detalle.precio_texto }}</td>
+                            <td class="text-end text-nowrap">{{ detalle.subtotal_texto }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-dark">
+                            <th colspan="3" class="text-end">Total</th>
+                            <th class="text-end text-nowrap">{{ venta.total_texto }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+    <a href="{% url 'ventas:listado' %}" class="btn btn-outline-secondary">&larr; Volver a ventas</a>
+    {% if perms.ventas.delete_venta %}
+    <a href="{% url 'ventas:anular' venta.pk %}" class="btn btn-outline-danger">Anular venta</a>
+    {% endif %}
+</div>
+{% endblock %}

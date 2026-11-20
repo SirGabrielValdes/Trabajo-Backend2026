@@ -12,11 +12,11 @@
         <p class="fw-bold mt-auto mb-2">{{ juego.precio_texto }}</p>
         <a href="{% url 'videojuegos:detalle' juego.id %}" class="btn btn-outline-primary btn-sm">Ver ficha</a>
     </div>
-    {% if acciones %}
+    {% if acciones and perms.videojuegos.change_videojuego or acciones and perms.videojuegos.delete_videojuego %}
     <div class="card-footer bg-transparent text-center">
         {% url 'videojuegos:modificar' 'videojuegos' juego.pk as url_modificar %}
         {% url 'videojuegos:eliminar' 'videojuegos' juego.pk as url_eliminar %}
-        {% include "includes/botones_fila.html" %}
+        {% include "includes/botones_fila.html" with puede_modificar=perms.videojuegos.change_videojuego puede_eliminar=perms.videojuegos.delete_videojuego %}
     </div>
     {% endif %}
 </div>

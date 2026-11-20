@@ -1,0 +1,18 @@
+{% comment %}Mantenedores que el perfil puede usar y las acciones permitidas en cada uno.{% endcomment %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {% for m in mantenedores %}
+    <div class="col">
+        <a href="{% url m.ruta %}" class="card h-100 shadow-sm text-decoration-none tarjeta">
+            <div class="card-body">
+                <h3 class="h6 fw-bold text-body mb-2">{{ m.nombre }}</h3>
+                <span class="badge text-bg-secondary">Ver / Buscar</span>
+                <span class="badge {% if m.crear %}text-bg-success{% else %}text-bg-light text-decoration-line-through{% endif %}">Crear</span>
+                <span class="badge {% if m.modificar %}text-bg-warning{% else %}text-bg-light text-decoration-line-through{% endif %}">Modificar</span>
+                <span class="badge {% if m.eliminar %}text-bg-danger{% else %}text-bg-light text-decoration-line-through{% endif %}">Eliminar</span>
+            </div>
+        </a>
+    </div>
+    {% empty %}
+    <p class="text-muted">No tienes mantenedores asignados.</p>
+    {% endfor %}
+</div>

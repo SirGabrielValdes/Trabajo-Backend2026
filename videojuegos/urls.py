@@ -11,11 +11,8 @@ urlpatterns = [
     path("videojuegos/generos/", views.generos, name="generos"),
     path("videojuegos/desarrolladoras/", views.desarrolladoras, name="desarrolladoras"),
     path("videojuegos/plataformas/", views.plataformas, name="plataformas"),
-    # Rutas de los botones de acción (marcadores de posición para la Evaluación N°3)
-    path("videojuegos/<slug:entidad>/agregar/", views.accion_pendiente,
-         {"accion": "agregar"}, name="agregar"),
-    path("videojuegos/<slug:entidad>/<int:pk>/modificar/", views.accion_pendiente,
-         {"accion": "modificar"}, name="modificar"),
-    path("videojuegos/<slug:entidad>/<int:pk>/eliminar/", views.accion_pendiente,
-         {"accion": "eliminar"}, name="eliminar"),
+    # Mantenedores (CRUD): <entidad> es la clave del diccionario MANTENEDORES
+    path("videojuegos/<slug:entidad>/agregar/", views.agregar, name="agregar"),
+    path("videojuegos/<slug:entidad>/<int:pk>/modificar/", views.modificar, name="modificar"),
+    path("videojuegos/<slug:entidad>/<int:pk>/eliminar/", views.eliminar, name="eliminar"),
 ]

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block titulo %}Recuperar contraseña{% endblock %}
+{% block encabezado %}Recuperar contraseña{% endblock %}
+{% block subtitulo %}Te enviaremos un enlace a tu correo electrónico{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <p>Ingresa el correo electrónico asociado a tu usuario.</p>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "includes/formulario_campos.html" %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Enviar enlace de recuperación</button>
+                    </div>
+                </form>
+                <p class="text-center mt-3 mb-0"><a href="{% url 'cuentas:login' %}">&larr; Volver a iniciar sesión</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

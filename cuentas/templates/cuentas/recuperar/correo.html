@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<body style="font-family: Arial, sans-serif; background: #f4f4f7; padding: 24px;">
+    <div style="max-width: 520px; margin: auto; background: #ffffff; border-radius: 8px; padding: 24px;">
+        <h2 style="color: #1d4f91;">Recuperación de contraseña</h2>
+        <p>Hola {{ user.get_full_name|default:user.get_username }}:</p>
+        <p>Recibimos una solicitud para restablecer la contraseña de tu usuario <strong>{{ user.get_username }}</strong> en ZonaOcio.</p>
+        <p style="text-align: center; margin: 28px 0;">
+            <a href="{{ protocol }}://{{ domain }}{% url 'cuentas:recuperar_confirmar' uidb64=uid token=token %}"
+               style="background: #198754; color: #ffffff; padding: 12px 20px; border-radius: 6px; text-decoration: none;">
+                Crear nueva contraseña
+            </a>
+        </p>
+        <p style="color: #666; font-size: 13px;">El enlace vence en 1 hora y solo se puede usar una vez.
+            Si no solicitaste este cambio, ignora este correo.</p>
+    </div>
+</body>
+</html>

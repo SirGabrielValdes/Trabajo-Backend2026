@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva contraseña{% endblock %}
+{% block encabezado %}Nueva contraseña{% endblock %}
+{% block subtitulo %}{% if validlink %}Define tu nueva contraseña{% else %}Enlace no válido{% endif %}{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        {% if validlink %}
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% include "includes/formulario_campos.html" %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Cambiar contraseña</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-danger">
+            El enlace de recuperación no es válido: ya fue usado o venció.
+        </div>
+        <a href="{% url 'cuentas:recuperar' %}" class="btn btn-primary">Solicitar un nuevo enlace</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

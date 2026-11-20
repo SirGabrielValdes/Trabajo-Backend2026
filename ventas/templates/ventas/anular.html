@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block titulo %}Anular {{ venta }}{% endblock %}
+{% block encabezado %}Anular {{ venta }}{% endblock %}
+{% block subtitulo %}Operación crítica: esta acción no se puede deshacer{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-danger shadow-sm">
+            <div class="card-body p-4">
+                <p class="fs-5">¿Seguro que deseas anular la <strong>{{ venta }}</strong> de
+                    <strong>{{ venta.cliente.nombre }}</strong> por <strong>{{ venta.total_texto }}</strong>?</p>
+                <p class="text-muted">La venta se eliminará y las unidades vendidas volverán al stock.</p>
+                <form method="post" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Sí, anular</button>
+                    <a href="{% url 'ventas:detalle' venta.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

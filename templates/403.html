@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block titulo %}Acceso denegado{% endblock %}
+{% block encabezado %}Acceso denegado{% endblock %}
+{% block subtitulo %}Tu perfil no tiene permiso para realizar esta acción{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="alert alert-danger">
+            No tienes los permisos necesarios para acceder a esta página.
+            Si crees que es un error, contacta a un usuario Administrador.
+        </div>
+        <a href="{% url 'cuentas:panel' %}" class="btn btn-outline-secondary">&larr; Volver a mi panel</a>
+    </div>
+</div>
+{% endblock %}

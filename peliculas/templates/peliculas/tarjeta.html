@@ -12,11 +12,11 @@
         <p class="text-warning mt-auto mb-2" title="{{ pelicula.calificacion }} / 10">{{ pelicula.estrellas }}</p>
         <a href="{% url 'peliculas:detalle' pelicula.id %}" class="btn btn-outline-danger btn-sm">Ver ficha</a>
     </div>
-    {% if acciones %}
+    {% if acciones and perms.peliculas.change_pelicula or acciones and perms.peliculas.delete_pelicula %}
     <div class="card-footer bg-transparent text-center">
         {% url 'peliculas:modificar' 'peliculas' pelicula.pk as url_modificar %}
         {% url 'peliculas:eliminar' 'peliculas' pelicula.pk as url_eliminar %}
-        {% include "includes/botones_fila.html" %}
+        {% include "includes/botones_fila.html" with puede_modificar=perms.peliculas.change_pelicula puede_eliminar=perms.peliculas.delete_pelicula %}
     </div>
     {% endif %}
 </div>

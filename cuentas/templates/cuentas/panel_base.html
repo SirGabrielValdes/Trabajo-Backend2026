@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block titulo %}Dashboard {{ rol }}{% endblock %}
+{% block encabezado %}Dashboard {{ rol|default:"" }}{% endblock %}
+{% block subtitulo %}Hola, {{ user.get_full_name|default:user.get_username }}{% endblock %}
+
+{% block contenido %}
+{% block panel %}{% endblock %}
+{% endblock %}

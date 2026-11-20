@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva venta{% endblock %}
+{% block encabezado %}Nueva venta{% endblock %}
+{% block subtitulo %}Selecciona el cliente y los videojuegos vendidos{% endblock %}
+
+{% block contenido %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold">1. Cliente</div>
+        <div class="card-body">
+            {% include "includes/formulario_campos.html" with form=venta_form %}
+            {% if perms.ventas.add_cliente %}
+            <a href="{% url 'ventas:agregar' 'clientes' %}" class="small">¿Cliente nuevo? Regístralo aquí</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-semibold">2. Videojuegos vendidos</div>
+        <div class="card-body">
+            {{ detalle_formset.management_form }}
+            {% if detalle_formset.non_form_errors %}
+            <div class="alert alert-danger">
+                {% for error in detalle_formset.non_form_errors %}<div>{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+            <p class="text-muted small">Completa al menos una línea. Las líneas vacías se ignoran.</p>
+            <div class="table-responsive">
+                <table class="table align-top">
+                    <thead>
+                        <tr><th>#</th><th>Videojuego</th><th style="width: 160px">Cantidad</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for linea in detalle_formset %}
+                        <tr>
+                            <td class="pt-3">{{ forloop.counter }}</td>
+                            <td>
+                                {% for hidden in linea.hidden_fields %}{{ hidden }}{% endfor %}
+                                {{ linea.videojuego }}
+                                {% for error in linea.videojuego.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                            </td>
+                            <td>
+                                {{ linea.cantidad }}
+                                {% for error in linea.cantidad.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted mb-0">El precio y el total se calculan automáticamente al guardar, y el stock se descuenta.</p>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">Registrar venta</button>
+        <a href="{% url 'ventas:listado' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

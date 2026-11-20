@@ -6,7 +6,7 @@
 
 {% block contenido %}
 {% url 'peliculas:agregar' 'clasificaciones' as url_agregar %}
-{% include "includes/barra_acciones.html" with texto_busqueda="Código o descripción" %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Código o descripción" puede_agregar=perms.peliculas.add_clasificacion %}
 
 <ul class="list-group shadow-sm">
     {% for clasificacion in registros %}
@@ -19,7 +19,7 @@
             <span class="badge rounded-pill text-bg-danger">{{ clasificacion.total }} película{{ clasificacion.total|pluralize }}</span>
             {% url 'peliculas:modificar' 'clasificaciones' clasificacion.pk as url_modificar %}
             {% url 'peliculas:eliminar' 'clasificaciones' clasificacion.pk as url_eliminar %}
-            {% include "includes/botones_fila.html" %}
+            {% include "includes/botones_fila.html" with puede_modificar=perms.peliculas.change_clasificacion puede_eliminar=perms.peliculas.delete_clasificacion %}
         </div>
     </li>
     {% empty %}

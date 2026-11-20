@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block titulo %}Correo enviado{% endblock %}
+{% block encabezado %}Revisa tu correo{% endblock %}
+{% block subtitulo %}Solicitud de recuperación recibida{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="alert alert-success">
+            Si el correo ingresado pertenece a un usuario registrado, te enviamos un enlace para
+            crear una nueva contraseña. El enlace vence en 1 hora y solo se puede usar una vez.
+        </div>
+        <p class="text-muted">¿No llegó? Revisa la carpeta de spam o vuelve a solicitarlo.</p>
+        <a href="{% url 'cuentas:login' %}" class="btn btn-outline-secondary">Volver a iniciar sesión</a>
+    </div>
+</div>
+{% endblock %}

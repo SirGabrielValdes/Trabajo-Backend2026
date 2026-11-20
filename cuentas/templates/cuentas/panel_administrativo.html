@@ -1,0 +1,27 @@
+{% extends "cuentas/panel_base.html" %}
+
+{% block panel %}
+<div class="row g-3 mb-4">
+    <div class="col-md-4">{% include "cuentas/_tarjeta_dato.html" with valor=mis_ventas_hoy.cantidad etiqueta="Mis ventas de hoy" color="success" %}</div>
+    <div class="col-md-4">{% include "cuentas/_tarjeta_dato.html" with valor=mis_ventas_hoy.monto etiqueta="Mi monto vendido hoy" color="success" %}</div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-grid gap-2 align-content-center">
+                <a href="{% url 'ventas:nueva' %}" class="btn btn-success btn-lg">+ Nueva venta</a>
+                <a href="{% url 'ventas:listado' %}" class="btn btn-outline-primary">Mis ventas</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-secondary">
+    <strong>Funcionalidades asignadas:</strong> registrar ventas, gestionar clientes y consultar el catálogo.
+    Tu perfil no puede eliminar registros, anular ventas ni gestionar usuarios.
+</div>
+
+<h2 class="h5 fw-bold mb-3">Mis funcionalidades</h2>
+<div class="mb-4">{% include "cuentas/_mantenedores.html" %}</div>
+
+<h2 class="h5 fw-bold mb-3">Mis últimas ventas</h2>
+<div class="card shadow-sm">{% include "cuentas/_ultimas_ventas.html" with ventas=mis_ultimas_ventas %}</div>
+{% endblock %}

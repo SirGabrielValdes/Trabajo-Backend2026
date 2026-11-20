@@ -6,7 +6,7 @@
 
 {% block contenido %}
 {% url 'videojuegos:agregar' 'plataformas' as url_agregar %}
-{% include "includes/barra_acciones.html" with texto_busqueda="Nombre o fabricante" %}
+{% include "includes/barra_acciones.html" with texto_busqueda="Nombre o fabricante" puede_agregar=perms.videojuegos.add_plataforma %}
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for plataforma in registros %}
@@ -28,7 +28,7 @@
             <div class="card-footer bg-transparent text-end">
                 {% url 'videojuegos:modificar' 'plataformas' plataforma.pk as url_modificar %}
                 {% url 'videojuegos:eliminar' 'plataformas' plataforma.pk as url_eliminar %}
-                {% include "includes/botones_fila.html" %}
+                {% include "includes/botones_fila.html" with puede_modificar=perms.videojuegos.change_plataforma puede_eliminar=perms.videojuegos.delete_plataforma %}
             </div>
         </div>
     </div>
